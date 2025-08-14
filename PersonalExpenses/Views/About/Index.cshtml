@@ -1,0 +1,110 @@
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "About";
+}
+
+@section Styles {
+    <style>
+        /* About Page Custom Styles */
+        .section {
+            margin-bottom: 2rem;
+        }
+        .section h2 {
+            margin-bottom: 0.5rem;
+            color: #2979ff;
+        }
+        .dev-card {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            background-color: #2a2a2a;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+        .dev-card img.profile {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #2979ff;
+        }
+        .dev-info h3 {
+            margin: 0;
+            font-size: 1.75rem;
+            color: #ecf0f1;
+        }
+        .dev-info p {
+            margin: 0.5rem 0;
+            line-height: 1.5;
+        }
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .social-links a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background-color: #1f1f1f;
+            border-radius: 4px;
+            color: #ecf0f1;
+            transition: background-color 0.2s;
+        }
+        .social-links a:hover {
+            background-color: #2979ff;
+        }
+        .social-links img {
+            width: 24px;
+            height: 24px;
+        }
+    </style>
+}
+
+<h1 class="page-title">About Personal Expenses</h1>
+
+<div class="section">
+    <p>
+        Welcome to <strong>Personal Expenses</strong>—your simple, secure solution for tracking every euro you spend.
+        We believe that good financial habits start with clear visibility and effortless tools.
+    </p>
+</div>
+
+<div class="section">
+    <h2>Our Mission</h2>
+    <p>
+        To empower individuals to take control of their finances by offering
+        an intuitive, privacy-first expense tracker that works anywhere, on any device.
+    </p>
+</div>
+
+<div class="section">
+    <h2>What We Offer</h2>
+    <ul>
+        <li><strong>Easy Tracking:</strong> Log expenses in under 10 seconds.</li>
+        <li><strong>Insightful Summaries:</strong> Daily, weekly, and monthly breakdowns.</li>
+        <li><strong>Data Privacy:</strong> We never share or sell your personal data.</li>
+    </ul>
+</div>
+
+<div class="section dev-card">
+    <img src="/images/profile.jpg" alt="Tomás Martinho" class="profile" />
+    <div class="dev-info">
+        <h3>Tomás Martinho</h3>
+        <p>
+            A recently graduated backend enthusiast with a passion for building robust microservices,
+            implementing CI/CD pipelines, and architecting cloud-native solutions using Kubernetes and CNCF projects.
+        </p>
+        <div class="social-links">
+            <a href="https://www.linkedin.com/in/tom%C3%A1s-martinho-449b5b232/" target="_blank">
+                <img src="/images/linkedin.svg" alt="LinkedIn" />
+                LinkedIn
+            </a>
+            <a href="https://github.com/Toms223" target="_blank">
+                <img src="/images/github.svg" alt="GitHub" />
+                GitHub
+            </a>
+        </div>
+    </div>
+</div>

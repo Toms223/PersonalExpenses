@@ -1,0 +1,111 @@
+@{
+Layout = "_Layout";
+ViewData["Title"] = "Home";
+}
+
+@section Styles {
+<style>
+    /* Hero Section */
+    .hero {
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+    .hero h1 {
+        font-size: 2.5rem;
+        margin-bottom: 1rem;
+    }
+    .hero p {
+        font-size: 1.25rem;
+        max-width: 600px;
+        margin: 0 auto 1rem;
+        line-height: 1.5;
+    }
+    .btn-group {
+        display: inline-flex;
+        gap: 1rem;
+    }
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+        text-decoration: none;
+    }
+    .btn-primary {
+        background-color: #2979ff;
+        color: #fff;
+    }
+    .btn-primary:hover {
+        background-color: #1c54b2;
+    }
+    .btn-outline {
+        background-color: transparent;
+        color: #2979ff;
+        border: 2px solid #2979ff;
+    }
+    .btn-outline:hover {
+        background-color: #2979ff;
+        color: #fff;
+    }
+
+    /* Features Section */
+    .features {
+        padding: 2rem 1rem;
+        background-color: #1e1e1e;
+        border-radius: 8px;
+        max-width: 700px;
+        margin: 2rem auto;
+        text-align: center;
+    }
+    .features h2 {
+        margin-bottom: 1.5rem;
+    }
+    .features ul {
+        list-style: none;
+        padding: 0;
+    }
+    .features li {
+        margin-bottom: 1rem;
+        line-height: 1.5;
+    }
+
+    /* Call-to-Action Section */
+    .cta {
+        text-align: center;
+        padding: 2rem 1rem;
+    }
+    .cta h2 {
+        margin-bottom: 1rem;
+    }
+    .cta p {
+        max-width: 600px;
+        margin: 0 auto 2rem;
+        line-height: 1.5;
+    }
+</style>
+}
+<div class="hero">
+    <h1>Take Control of Your Spending</h1>
+    <p>
+        Personal Expenses helps you effortlessly track every euro you spend—so you can budget smarter, save faster, and stress less.
+    </p>
+    <div class="btn-group">
+        <a href="/Account/Login" class="btn btn-primary">Login</a>
+        <a href="/Account/Register" class="btn btn-outline">Register</a>
+    </div>
+</div>
+<div class="features">
+    <h2>Why Choose Personal Expenses?</h2>
+    <ul>
+        <li><strong>Quick & Easy:</strong> Add an expense in seconds, from anywhere.</li>
+        <li><strong>Insightful Reports:</strong> See where your money goes with built-in charts and summaries.</li>
+        <li><strong>Safe & Secure:</strong> Your data stays private and encrypted.</li>
+    </ul>
+</div>
+<div class="cta">
+    <h2>Get Started Today</h2>
+    <p>
+        Join thousands who’ve taken charge of their finances. Sign up now and make every cent count.
+    </p>
+    <a href="/Account/Register" class="btn btn-primary">Create Free Account</a>
+</div>

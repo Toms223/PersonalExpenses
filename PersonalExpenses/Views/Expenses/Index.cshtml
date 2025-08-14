@@ -1,0 +1,628 @@
+@using PersonalExpenses.Helpers.Expenses
+@using PersonalExpenses.Model
+@using PersonalExpenses.ViewModel
+@model PersonalExpenses.ViewModel.ExpensesView
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "My Expenses";
+    bool isDescending = Model.OrderBy == OrderBy.DateDescending;
+    OrderBy nextOrder = isDescending ? OrderBy.DateAscending : OrderBy.DateDescending;
+}
+@section Styles {
+    <style>
+        /* Navigation and filter container */
+        .month-navigation {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .month-navigation a {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem 1rem;
+            margin: 0;
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .month-navigation a:hover {
+            background-color: #2980b9;
+        }
+
+        .month-filter {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .month-filter form {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .month-filter label {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+
+        .month-filter select,
+        .month-filter input[type="number"] {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+
+        .month-filter select {
+            min-width: 120px;
+        }
+
+        .month-filter input[type="number"] {
+            width: 80px;
+        }
+
+        .month-filter button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            background-color: #3498db;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .month-filter button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Responsive design */
+        @@media (max-width: 768px) {
+            .month-filter form {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            .month-navigation {
+                flex-direction: column;
+                align-items: center;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Order link/button styles */
+        .order-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            margin-left: 0.5rem;
+            display: inline-block;
+        }
+        
+        .order-button svg {
+            width: 24px;
+            height: 24px;
+            fill: #ecf0f1;
+        }
+        
+        /* Keyframes for directional spin */
+        @@keyframes spin-down {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(180deg); }
+        }
+        
+        @@keyframes spin-up {
+            from { transform: rotate(180deg); }
+            to   { transform: rotate(0deg); }
+        }
+        
+        /* Apply rotation state */
+        .order-button.desc {
+            transform: rotate(180deg);
+        }
+        
+        /* Trigger animation on load */
+        .order-button.spin {
+            animation: spin-up 0.5s ease;
+        }
+        
+        .order-button.spin.desc {
+            animation: spin-down 0.5s ease;
+        }
+        
+        /* Date filter styles */
+        .date-filters {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        
+        .date-filter-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .date-filter-group label {
+            font-weight: bold;
+            margin-bottom: 0.25rem;
+            font-size: 0.9rem;
+            color: #2c3e50;
+        }
+        
+        .date-filter-group input {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            background-color: white;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 0.5rem;
+            align-items: end;
+        }
+        
+        .filter-buttons button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background-color 0.3s ease;
+        }
+        .apply-filter {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .clear-filter {
+            border-radius: 4px;
+            padding: 0.35rem;
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .apply-filter:hover {
+            background-color: #2980b9;
+        }
+        .clear-filter:hover {
+            background-color: #7f8c8d;
+        }
+        .month-controls {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            align-items: center;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 28px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 28px;
+        }
+        .slider::before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+        .switch input:checked + .slider {
+            background-color: #4caf50;
+        }
+        .switch input:checked + .slider::before {
+            transform: translateX(22px);
+        }
+        .delete {
+            background-color: red;
+            border-radius: 2rem;
+            border: none;
+            padding: 0.3rem;
+            font-size: 1rem;
+            color: white;
+            font-weight: bold;
+        }
+    </style>
+}
+
+<div style="display:flex; align-items:center; justify-content:center; margin-bottom:1rem;">
+    <h1 class="page-title">My Expenses</h1>
+    <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new {OrderBy = nextOrder})"
+       class="order-button spin @(isDescending ? "desc" : "")" title="Toggle date order">
+        <svg viewBox="0 0 24 24">
+            <path d="M12 4l-8 8h16l-8-8z" />
+        </svg>
+    </a>
+</div>
+
+<!-- Date Filters -->
+<form class="date-filters" method="get" asp-controller="Expenses" asp-action="Index">
+    <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+    <input type="hidden" name="EditId" value="@Model.EditId"/>
+    <input type="hidden" name="Offset" value="@Model.Offset"/>
+    <input type="hidden" name="Limit" value="@Model.Limit"/>
+    <div class="date-filter-group">
+        <label for="StartDate">Start Date:</label>
+        <input type="date" id="StartDate" name="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+    </div>
+    <div class="date-filter-group">
+        <label for="EndDate">End Date:</label>
+        <input type="date" id="EndDate" name="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+    </div>
+
+    <div class="filter-buttons">
+        <button type="submit" class="apply-filter">Apply Filter</button>
+        <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new { StartDate = (DateOnly?)null, EndDate = (DateOnly?)null })" class="clear-filter">Clear</a>
+    </div>
+</form>
+<div class="view-toggle">
+    <form method="get" action="/Expenses/Index" style="display:inline;">
+        <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+        <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+        <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+        <input type="hidden" name="StartDate" value="@Model.StartDate" />
+        <input type="hidden" name="EndDate" value="@Model.EndDate" />
+        <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+        <input type="hidden" name="Offset" value="@Model.Offset" />
+        <input type="hidden" name="Limit" value="@Model.Limit" />
+        <input type="hidden" name="EditId" value="@Model.EditId"/>
+        <input type="hidden" name="ContinuousView" value="@(!Model.ContinuousView ? "true": "false")"/>
+        <label class="switch">
+            <input type="checkbox" onchange="this.form.submit()" @(Model.ContinuousView ? "checked" : "")>
+            <span class="slider"></span>
+        </label>
+        <span>@(Model.ContinuousView ? "Continuous View" : "Fixed View")</span>
+    </form>
+</div>
+@if (Model.ContinuousView)
+{
+    <form class="expense-form" action="/Expenses/AddContinuousExpense" method="post">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" placeholder="e.g. Coffee" required />
+        <label for="amount">Amount:</label>
+        <input type="number" id="amount" name="amount" step="0.01" placeholder="e.g. 3.50" required />
+        <label for="date">Date:</label>
+        <input type="date" id="date" name="date" required />
+        <label for="amount">Period:</label>
+        <input type="number" id="period" name="period" step="1" placeholder="e.g. 30" required />
+        <label for="fixedExpense">Fixed:</label>
+        <label class="switch">
+            <input type="checkbox" id="fixedExpense" name="fixedExpense" value="true">
+            <span class="slider"></span>
+        </label>
+        <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+        <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+        <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+        <input type="hidden" name="StartDate" value="@Model.StartDate" />
+        <input type="hidden" name="EndDate" value="@Model.EndDate" />
+        <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+        <input type="hidden" name="Offset" value="@Model.Offset" />
+        <input type="hidden" name="Limit" value="@Model.Limit" />
+        <input type="hidden" name="EditId" value="@Model.EditId"/>
+        <input type="hidden" name="ContinuousView" value="@Model.ContinuousView"/>
+        <button type="submit">Add Expense</button>
+    </form>
+    <ul class="expense-list">
+            @foreach (var expense in Model.Expenses)
+            {
+                <li>
+                    @if (Model.EditId == expense.Id)
+                    {
+                        <form action="/Expenses/EditContinuousExpense" method="post">
+                            <input type="hidden" name="Id" value="@expense.Id" />
+                            <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+                            <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                            <input type="hidden" name="EditId" value="@Model.EditId"/>
+                            <input type="hidden" name="Offset" value="@Model.Offset"/>
+                            <input type="hidden" name="Limit" value="@Model.Limit"/>
+                            <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                            <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                            <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+                            <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+                            <input type="hidden" name="ContinuousView" value="@Model.ContinuousView"/>
+                            <input type="date" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")" />
+                            <input type="text" name="Name" value="@expense.Name"/>
+                            <input type="number" step="0.01" name="Amount" value="@expense.Amount" />
+                            <input type="number" step="1" name="Period" value="@expense.Period"/>
+                            <label for="fixedExpense">Fixed:</label>
+                            <label class="switch">
+                                <!-- Hidden field always exists -->
+                                <input type="hidden" id="fixedExpenseHidden" name="fixedExpense" value="@(expense.Fixed.ToString().ToLower())">
+
+                                <!-- Checkbox just controls the hidden field -->
+                                <input type="checkbox" id="fixedExpenseCheckbox" @(expense.Fixed ? "checked" : "") 
+                                       onchange="document.getElementById('fixedExpenseHidden').value = this.checked ? 'true' : 'false';">
+                                <span class="slider"></span>
+                            </label>
+                            <button type="submit">Save</button>
+                        </form>
+                        <form action="/Expenses/DeleteExpense" method="post">
+                            <input type="hidden" name="Id" value="@expense.Id" />
+                            <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+                            <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                            <input type="hidden" name="EditId" value="@Model.EditId"/>
+                            <input type="hidden" name="Offset" value="@Model.Offset"/>
+                            <input type="hidden" name="Limit" value="@Model.Limit"/>
+                            <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                            <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                            <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+                            <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+                            <input type="hidden" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")" />
+                            <input type="hidden" name="Name" value="@expense.Name"/>
+                            <input type="hidden" name="Amount" value="@expense.Amount" />
+                            <button class="delete" type="submit">Delete</button>
+                        </form>
+                    }
+                    else
+                    {
+                        if (expense.Continuous)
+                        {
+                            <span>@expense.Date.ToString("yyyy-MM-dd")</span>
+                            <span>@expense.Name</span>
+                            <span>@expense.Amount.ToString("C")</span>
+                            <span>@expense.Period - Days</span>
+                            <span>Next Payment: @expense.NextPayment()</span>
+                            <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new {EditId = expense.Id})" class="clear-filter">Edit</a>
+                            <form action="/Expenses/AddToCalender" method="post">
+                                <input type="hidden" name="Id" value="@expense.Id" />
+                                <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+                                <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                                <input type="hidden" name="EditId" value="@Model.EditId"/>
+                                <input type="hidden" name="Offset" value="@Model.Offset"/>
+                                <input type="hidden" name="Limit" value="@Model.Limit"/>
+                                <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                                <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                                <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+                                <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+                                <input type="hidden" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="Name" value="@expense.Name"/>
+                                <input type="hidden" name="Amount" value="@expense.Amount" />
+                                <button type="submit">Add to Outlook Calender</button>
+                            </form>
+                        }
+                    }
+                </li>
+            }
+        </ul>
+}
+else
+{
+    <form class="expense-form" action="/Expenses/AddExpense" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Coffee" required />
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount" step="0.01" placeholder="e.g. 3.50" required />
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required />
+    <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+    <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+    <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+    <input type="hidden" name="StartDate" value="@Model.StartDate" />
+    <input type="hidden" name="EndDate" value="@Model.EndDate" />
+    <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+    <input type="hidden" name="Offset" value="@Model.Offset" />
+    <input type="hidden" name="Limit" value="@Model.Limit" />
+    <input type="hidden" name="EditId" value="@Model.EditId"/>
+    <input type="hidden" name="ContinuousView" value="@Model.ContinuousView"/>
+    <button type="submit">Add Expense</button>
+</form>
+<div class="view-toggle">
+    <form method="get" action="/Expenses/Index" style="display:inline;">
+        <input type="hidden" name="MonthView" value="@(!Model.MonthView ? "true" : "false")" />
+        <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+        <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+        <input type="hidden" name="StartDate" value="@Model.StartDate" />
+        <input type="hidden" name="EndDate" value="@Model.EndDate" />
+        <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+        <input type="hidden" name="Offset" value="@Model.Offset" />
+        <input type="hidden" name="Limit" value="@Model.Limit" />
+        <input type="hidden" name="EditId" value="@Model.EditId"/>
+        <input type="hidden" name="ContinuousView" value="@Model.ContinuousView"/>
+        <label class="switch">
+            <input type="checkbox" onchange="this.form.submit()" @(Model.MonthView ? "checked" : "")>
+            <span class="slider"></span>
+        </label>
+        <span>@(Model.MonthView ? "Monthly View" : "All Expenses View")</span>
+    </form>
+</div>
+    @if (!Model.MonthView)
+    {
+        <ul class="expense-list">
+            @if(Model.Expenses != null) @foreach (var expense in Model.Expenses)
+            {
+                <li>
+                    @if (Model.EditId == expense.Id)
+                    {
+                        <form action="/Expenses/EditExpense" method="post">
+                            <input type="hidden" name="Id" value="@expense.Id"/>
+                            <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")"/>
+                            <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                            <input type="hidden" name="EditId" value="@Model.EditId"/>
+                            <input type="hidden" name="Offset" value="@Model.Offset"/>
+                            <input type="hidden" name="Limit" value="@Model.Limit"/>
+                            <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                            <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                            <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth"/>
+                            <input type="hidden" name="SelectedYear" value="@Model.SelectedYear"/>
+                            <input type="hidden" name="ContinuousView" value="@Model.ContinuousView"/>
+                            <input type="date" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")"/>
+                            <input type="text" name="Name" value="@expense.Name"/>
+                            <input type="number" step="0.01" name="Amount" value="@expense.Amount"/>
+                            <button type="submit">Save</button>
+                        </form>
+                        <form action="/Expenses/DeleteExpense" method="post">
+                            <input type="hidden" name="Id" value="@expense.Id"/>
+                            <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")"/>
+                            <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                            <input type="hidden" name="EditId" value="@Model.EditId"/>
+                            <input type="hidden" name="Offset" value="@Model.Offset"/>
+                            <input type="hidden" name="Limit" value="@Model.Limit"/>
+                            <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                            <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                            <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth"/>
+                            <input type="hidden" name="SelectedYear" value="@Model.SelectedYear"/>
+                            <input type="hidden" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")"/>
+                            <input type="hidden" name="Name" value="@expense.Name"/>
+                            <input type="hidden" step="0.01" name="Amount" value="@expense.Amount"/>
+                            <button class="delete" type="submit">Delete</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span>@expense.Date.ToString("yyyy-MM-dd")</span>
+                        <span>@expense.Name</span>
+                        <span>@expense.Amount.ToString("C")</span>
+                        <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new { EditId = expense.Id })" class="clear-filter">Edit</a>
+                    }
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <div class="month-controls">
+            <div class="month-filter">
+                <form method="get" action="/Expenses/Index">
+                    <label for="month">Month:</label>
+                    <select name="SelectedMonth">
+                        @foreach (MonthOfYear m in Model.MonthlyExpenses.FindAll(e => e.Year == (Model.SelectedYear == 0 ? DateTime.Now.Year : Model.SelectedYear)).Select(e => e.MonthOfYear))
+                        {
+                            <option value="@((int)m)" @((MonthOfYear)Model.SelectedMonth == m ? "selected" : "")>@m</option>
+                        }
+                    </select>
+
+                    <label for="year">Year:</label>
+                    <select name="SelectedYear">
+                        @foreach (int y in Model.MonthlyExpenses.Select(e => e.Year))
+                        {
+                            <option value="@(y)" @(Model.SelectedYear == y ? "selected" : "")>@y</option>
+                        }
+                    </select>
+                    <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+                    <input type="hidden" name="StartDate" value="@Model.StartDate" />
+                    <input type="hidden" name="EndDate" value="@Model.EndDate" />
+                    <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+                    <input type="hidden" name="Offset" value="@Model.Offset" />
+                    <input type="hidden" name="Limit" value="@Model.Limit" />
+                    <input type="hidden" name="EditId" value="@Model.EditId"/>
+                    <button type="submit">Go</button>
+                </form>
+            </div>
+            <div class="month-navigation">
+                @{
+                    // Navigation calculation
+                    var prevMonth = (Model.SelectedMonth == 0 ? DateTime.Now.Month - 1 : Model.SelectedMonth) - 1;
+                    var prevYear = (Model.SelectedYear == 0 ? DateTime.Now.Year : Model.SelectedYear);
+                    if (prevMonth < 1) { prevMonth = 12; prevYear--; }
+
+                    var nextMonth = (Model.SelectedMonth == 0 ? DateTime.Now.Month - 1 : Model.SelectedMonth) + 1;
+                    var nextYear = (Model.SelectedYear == 0 ? DateTime.Now.Year : Model.SelectedYear);
+                    if (nextMonth > 12) { nextMonth = 1; nextYear++; }
+                }
+                <a href="@Url.GenerateExpenseLink("Expenses","Index", Model, new { SelectedMonth = prevMonth, SelectedYear = prevYear })">Previous</a>
+                <a href="@Url.GenerateExpenseLink("Expenses","Index", Model, new { SelectedMonth = nextMonth, SelectedYear = nextYear })">Next</a>
+            </div>
+        </div>
+        var monthToShow = Model.MonthlyExpenses
+            .FirstOrDefault(m => m.Year == (Model.SelectedYear == 0 ? DateTime.Now.Year : Model.SelectedYear) &&
+                                 m.MonthOfYear == (MonthOfYear)(Model.SelectedMonth == 0 ? DateTime.Now.Month - 1 : Model.SelectedMonth));
+
+        if (monthToShow != null)
+        {
+            <div class="monthly-expense-header">
+                <h2>@monthToShow.MonthOfYear @monthToShow.Year</h2>
+                <p><strong>Total:</strong> @monthToShow.TotalSpent.ToString("C")</p>
+                <p><strong>Expected Total:</strong> @monthToShow.ExpectedMonthTotal.ToString("C")</p>
+            </div> 
+            <ul class="expense-list">
+                    @foreach (var expense in monthToShow.Expenses)
+                    {
+                        <li>
+                        @if (Model.EditId == expense.Id)
+                        {
+                            <form action="/Expenses/EditExpense" method="post">
+                                <input type="hidden" name="Id" value="@expense.Id"/>
+                                <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+                                <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                                <input type="hidden" name="EditId" value="@Model.EditId"/>
+                                <input type="hidden" name="Offset" value="@Model.Offset"/>
+                                <input type="hidden" name="Limit" value="@Model.Limit"/>
+                                <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                                <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                                <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+                                <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+                                <input type="date" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")"/>
+                                <input type="text" name="Name" value="@expense.Name"/>
+                                <input type="number" step="0.01" name="Amount" value="@expense.Amount"/>
+                                <button type="submit">Save</button>
+                            </form>
+                            <form action="/Expenses/DeleteExpense" method="post">
+                                <input type="hidden" name="Id" value="@expense.Id" />
+                                <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+                                <input type="hidden" name="OrderBy" value="@Model.OrderBy"/>
+                                <input type="hidden" name="EditId" value="@Model.EditId"/>
+                                <input type="hidden" name="Offset" value="@Model.Offset"/>
+                                <input type="hidden" name="Limit" value="@Model.Limit"/>
+                                <input type="hidden" name="StartDate" value="@Model.StartDate"/>
+                                <input type="hidden" name="EndDate" value="@Model.EndDate"/>
+                                <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+                                <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+                                <input type="hidden" name="Date" value="@expense.Date.ToString("yyyy-MM-dd")" />
+                                <input type="hidden" name="Name" value="@expense.Name"/>
+                                <input type="hidden" step="0.01" name="Amount" value="@expense.Amount" />
+                                <button class="delete" type="submit">Delete</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span>@expense.Date.ToString("yyyy-MM-dd")</span>
+                            <span>@expense.Name</span>
+                            <span>@expense.Amount.ToString("C")</span>
+                            <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new { EditId = expense.Id })" class="clear-filter">Edit</a>
+                        }
+                        </li>
+                    }
+            </ul>
+        }
+        else
+        {
+            <p>No expenses found for @Model.SelectedMonth @Model.SelectedYear.</p>
+        }
+    }
+}
+

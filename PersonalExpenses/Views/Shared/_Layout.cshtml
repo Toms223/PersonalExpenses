@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Personal Expenses</title>
+
+    <style>
+        /* Global */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #ecf0f1;
+        }
+        a { text-decoration: none; }
+
+        /* Navbar */
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1f1f1f;
+            padding: 1rem 2rem;
+            color: #ecf0f1;
+        }
+        .navbar .brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .navbar a {
+            color: #ecf0f1;
+            margin-left: 1rem;
+        }
+        .navbar a:hover {
+            text-decoration: underline;
+        }
+
+        /* Container */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #1e1e1e;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+
+        /* Page Title */
+        h1.page-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: #ecf0f1;
+        }
+
+        /* Expense Form */
+        form.expense-form {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 1rem 2rem;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        form.expense-form label {
+            font-weight: 600;
+            color: #bdc3c7;
+        }
+        form.expense-form input {
+            padding: 0.5rem;
+            border: 1px solid #333;
+            border-radius: 4px;
+            background-color: #2a2a2a;
+            color: #ecf0f1;
+        }
+        form.expense-form input::placeholder {
+            color: #7f8c8d;
+        }
+        form.expense-form button {
+            grid-column: span 2;
+            padding: 0.75rem;
+            background-color: #2979ff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        form.expense-form button:hover {
+            background-color: #1c54b2;
+        }
+
+        /* Expense List */
+        ul.expense-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        ul.expense-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.75rem;
+            border-bottom: 1px solid #333;
+        }
+        ul.expense-list li:nth-child(even) {
+            background-color: #2a2a2a;
+        }
+        ul.expense-list li span {
+            flex: 1;
+        }
+    </style>
+
+    @RenderSection("Styles", required: false)
+</head>
+<body>
+    <nav class="navbar">
+        <div class="brand">Personal Expenses</div>
+        <div>
+            <a href="/">Home</a>
+            <a href="/Expenses">Expenses</a>
+            <a href="/About">About</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        @RenderBody()
+    </div>
+</body>
+</html>
