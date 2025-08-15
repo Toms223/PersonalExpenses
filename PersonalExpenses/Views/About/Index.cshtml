@@ -1,72 +1,126 @@
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "About";
+Layout = "_Layout";
+ViewData["Title"] = "About";
 }
 
 @section Styles {
-    <style>
-        /* About Page Custom Styles */
-        .section {
-            margin-bottom: 2rem;
-        }
-        .section h2 {
-            margin-bottom: 0.5rem;
-            color: #2979ff;
-        }
-        .dev-card {
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            background-color: #2a2a2a;
-            padding: 2rem;
-            border-radius: 8px;
-        }
-        .dev-card img.profile {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #2979ff;
-        }
-        .dev-info h3 {
-            margin: 0;
-            font-size: 1.75rem;
-            color: #ecf0f1;
-        }
-        .dev-info p {
-            margin: 0.5rem 0;
-            line-height: 1.5;
-        }
-        .social-links {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-        }
-        .social-links a {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background-color: #1f1f1f;
-            border-radius: 4px;
-            color: #ecf0f1;
-            transition: background-color 0.2s;
-        }
-        .social-links a:hover {
-            background-color: #2979ff;
-        }
-        .social-links img {
-            width: 24px;
-            height: 24px;
-        }
-    </style>
+<style>
+    /* General page style */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        color: white;
+    }
+
+    .page-title {
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    /* Section layout */
+    .section {
+        margin-bottom: 2rem;
+        max-width: 900px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .section h2 {
+        margin-bottom: 0.5rem;
+        font-size: 1.75rem;
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .section p,
+    .section li {
+        color: rgba(255,255,255,0.85);
+        line-height: 1.6;
+    }
+    .section ul {
+        list-style: none;
+        padding: 0;
+    }
+    .section li {
+        padding: 0.5rem 0;
+    }
+
+    /* Glass card for developer */
+    .dev-card {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 2rem;
+        border-radius: 1rem;
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease;
+    }
+    .dev-card:hover {
+        transform: translateY(-4px);
+    }
+
+    /* Profile image */
+    .dev-card img.profile {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid transparent;
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2) border-box;
+        padding: 2px;
+    }
+
+    /* Dev info */
+    .dev-info h3 {
+        margin: 0;
+        font-size: 1.75rem;
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .dev-info p {
+        margin: 0.5rem 0;
+    }
+
+    /* Social links */
+    .social-links {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .social-links a {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: rgba(255,255,255,0.05);
+        border-radius: 0.5rem;
+        border: 1px solid rgba(255,255,255,0.1);
+        color: white;
+        transition: all 0.2s ease;
+    }
+    .social-links a:hover {
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        transform: scale(1.05);
+    }
+    .social-links img {
+        width: 24px;
+        height: 24px;
+    }
+</style>
 }
 
 <h1 class="page-title">About Personal Expenses</h1>
 
 <div class="section">
     <p>
-        Welcome to <strong>Personal Expenses</strong>—your simple, secure solution for tracking every euro you spend.
+        Welcome to <strong>Personal Expenses</strong> — your simple, secure solution for tracking every euro you spend.
         We believe that good financial habits start with clear visibility and effortless tools.
     </p>
 </div>

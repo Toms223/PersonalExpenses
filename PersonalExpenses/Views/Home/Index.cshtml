@@ -1,111 +1,153 @@
 @{
-Layout = "_Layout";
-ViewData["Title"] = "Home";
+    Layout = "_Layout";
+    ViewData["Title"] = "Home";
 }
 
 @section Styles {
 <style>
+    /* General Reset for smooth Apple-like look */
+    body {
+        background-color: #0A0A0A;
+        color: white;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        line-height: 1.5;
+    }
+
+    /* Glass effect panel */
+    .glass {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 1rem;
+        box-shadow: 0 4px 30px rgba(0,0,0,0.2);
+    }
+
+    /* Gradient button */
+    .btn-gradient {
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        display: inline-block;
+    }
+    .btn-gradient:hover {
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(10, 132, 255, 0.5);
+    }
+
+    /* Outline glass button */
+    .btn-outline-glass {
+        background: rgba(255,255,255,0.05);
+        border: 1px solid rgba(255,255,255,0.2);
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 0.75rem;
+        text-decoration: none;
+        transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .btn-outline-glass:hover {
+        background: rgba(255,255,255,0.15);
+        transform: scale(1.05);
+    }
+
     /* Hero Section */
     .hero {
         text-align: center;
-        padding: 2rem 1rem;
+        padding: 5rem 1rem 3rem;
+        max-width: 800px;
+        margin: auto;
     }
     .hero h1 {
-        font-size: 2.5rem;
+        font-size: 3rem;
+        font-weight: 700;
         margin-bottom: 1rem;
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .hero p {
         font-size: 1.25rem;
-        max-width: 600px;
-        margin: 0 auto 1rem;
-        line-height: 1.5;
+        color: rgba(255,255,255,0.8);
+        margin-bottom: 2rem;
     }
     .btn-group {
-        display: inline-flex;
+        display: flex;
         gap: 1rem;
-    }
-    .btn {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        border-radius: 4px;
-        transition: background-color 0.2s ease;
-        text-decoration: none;
-    }
-    .btn-primary {
-        background-color: #2979ff;
-        color: #fff;
-    }
-    .btn-primary:hover {
-        background-color: #1c54b2;
-    }
-    .btn-outline {
-        background-color: transparent;
-        color: #2979ff;
-        border: 2px solid #2979ff;
-    }
-    .btn-outline:hover {
-        background-color: #2979ff;
-        color: #fff;
+        justify-content: center;
     }
 
     /* Features Section */
     .features {
-        padding: 2rem 1rem;
-        background-color: #1e1e1e;
-        border-radius: 8px;
-        max-width: 700px;
-        margin: 2rem auto;
+        max-width: 1200px;
+        margin: 3rem auto;
+        padding: 2rem;
         text-align: center;
     }
     .features h2 {
-        margin-bottom: 1.5rem;
+        font-size: 2rem;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .features ul {
         list-style: none;
         padding: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1.5rem;
     }
     .features li {
-        margin-bottom: 1rem;
-        line-height: 1.5;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.1);
+        transition: transform 0.2s ease, background 0.3s ease;
     }
-
-    /* Call-to-Action Section */
-    .cta {
-        text-align: center;
-        padding: 2rem 1rem;
+    .features li:hover {
+        background: rgba(255,255,255,0.08);
+        transform: translateY(-4px);
     }
-    .cta h2 {
-        margin-bottom: 1rem;
-    }
-    .cta p {
-        max-width: 600px;
-        margin: 0 auto 2rem;
-        line-height: 1.5;
+    .features strong {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-size: 1.1rem;
     }
 </style>
 }
+
 <div class="hero">
     <h1>Take Control of Your Spending</h1>
     <p>
         Personal Expenses helps you effortlessly track every euro you spend—so you can budget smarter, save faster, and stress less.
     </p>
     <div class="btn-group">
-        <a href="/Account/Login" class="btn btn-primary">Login</a>
-        <a href="/Account/Register" class="btn btn-outline">Register</a>
+        <a href="/Expenses/Index" class="btn-gradient">Login</a>
+        <a href="/Expenses/Index" class="btn-outline-glass">Register</a>
     </div>
 </div>
+
 <div class="features">
     <h2>Why Choose Personal Expenses?</h2>
     <ul>
-        <li><strong>Quick & Easy:</strong> Add an expense in seconds, from anywhere.</li>
-        <li><strong>Insightful Reports:</strong> See where your money goes with built-in charts and summaries.</li>
-        <li><strong>Safe & Secure:</strong> Your data stays private and encrypted.</li>
+        <li>
+            <strong>🚀 Quick & Easy</strong>
+            Add an expense in seconds, from anywhere.
+        </li>
+        <li>
+            <strong>📊 Insightful Reports</strong>
+            See where your money goes with built-in charts and summaries.
+        </li>
+        <li>
+            <strong>🔒 Safe & Secure</strong>
+            Your data stays private and encrypted.
+        </li>
+        <li>
+            <strong>🔗 Integrate with your Outlook</strong>
+            Get warned about your upcoming payments.
+        </li>
     </ul>
-</div>
-<div class="cta">
-    <h2>Get Started Today</h2>
-    <p>
-        Join thousands who’ve taken charge of their finances. Sign up now and make every cent count.
-    </p>
-    <a href="/Account/Register" class="btn btn-primary">Create Free Account</a>
 </div>

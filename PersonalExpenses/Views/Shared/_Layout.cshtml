@@ -9,121 +9,152 @@
         /* Global */
         body {
             margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #121212;
-            color: #ecf0f1;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: radial-gradient(circle at 50% 50%, #0A0A0A, #1E1B2E);
+            transition: background 2s ease;
+            color: white;
         }
-        a { text-decoration: none; }
+        a {
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
 
-        /* Navbar */
+        /* Glass Navbar */
         .navbar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            background-color: #1f1f1f;
             padding: 1rem 2rem;
-            color: #ecf0f1;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
         .navbar .brand {
             font-size: 1.5rem;
             font-weight: bold;
+            background: linear-gradient(135deg, #0A84FF, #BF5AF2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .navbar nav {
+            display: flex;
+            gap: 1rem;
         }
         .navbar a {
-            color: #ecf0f1;
-            margin-left: 1rem;
+            color: rgba(255,255,255,0.85);
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
         }
         .navbar a:hover {
-            text-decoration: underline;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            transform: translateY(-1px);
         }
 
         /* Container */
         .container {
-            max-width: 800px;
+            max-width: 100%;
             margin: 2rem auto;
             padding: 1.5rem;
-            background-color: #1e1e1e;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
-            border-radius: 8px;
-        }
-
-        /* Page Title */
-        h1.page-title {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            color: #ecf0f1;
-        }
-
-        /* Expense Form */
-        form.expense-form {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 1rem 2rem;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-        form.expense-form label {
-            font-weight: 600;
-            color: #bdc3c7;
-        }
-        form.expense-form input {
-            padding: 0.5rem;
-            border: 1px solid #333;
-            border-radius: 4px;
-            background-color: #2a2a2a;
-            color: #ecf0f1;
-        }
-        form.expense-form input::placeholder {
-            color: #7f8c8d;
-        }
-        form.expense-form button {
-            grid-column: span 2;
-            padding: 0.75rem;
-            background-color: #2979ff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-        form.expense-form button:hover {
-            background-color: #1c54b2;
-        }
-
-        /* Expense List */
-        ul.expense-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        ul.expense-list li {
-            display: flex;
-            justify-content: space-between;
-            padding: 0.75rem;
-            border-bottom: 1px solid #333;
-        }
-        ul.expense-list li:nth-child(even) {
-            background-color: #2a2a2a;
-        }
-        ul.expense-list li span {
-            flex: 1;
         }
     </style>
 
     @RenderSection("Styles", required: false)
 </head>
 <body>
-    <nav class="navbar">
-        <div class="brand">Personal Expenses</div>
-        <div>
-            <a href="/">Home</a>
-            <a href="/Expenses">Expenses</a>
-            <a href="/About">About</a>
-        </div>
-    </nav>
+<script>
+    let focusX = 50;
+    let focusY = 50;
+    let dirX = 1, dirY = 1;
+    let brightnessShift = 0;
+    let shiftDirection = 1;
 
-    <div class="container">
-        @RenderBody()
-    </div>
+    function updateGradient() {
+        // Move the focus point slowly
+        focusX += dirX * 0.15;
+        focusY += dirY * 0.1;
+
+        if (focusX >= 70 || focusX <= 30) dirX *= -1;
+        if (focusY >= 70 || focusY <= 30) dirY *= -1;
+
+        // Oscillate brightness very subtly (±3%)
+        brightnessShift += shiftDirection * 0.05;
+        if (brightnessShift >= 3 || brightnessShift <= -3) {
+            shiftDirection *= -1;
+        }
+
+        // Adjust using HSL lightness for smoother effect
+        const base1 = adjustLightness("#0A0A0A", brightnessShift);
+        const base2 = adjustLightness("#1E1B2E", brightnessShift);
+
+        document.body.style.background =
+            `radial-gradient(circle at ${focusX}% ${focusY}%, ${base1}, ${base2})`;
+    }
+
+    function adjustLightness(hex, percent) {
+        let r = parseInt(hex.substr(1, 2), 16) / 255;
+        let g = parseInt(hex.substr(3, 2), 16) / 255;
+        let b = parseInt(hex.substr(5, 2), 16) / 255;
+
+        let max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let l = (max + min) / 2;
+        let s, h;
+
+        if (max === min) {
+            s = h = 0; // gray
+        } else {
+            let d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        // Adjust lightness
+        l = Math.min(1, Math.max(0, l + percent / 100));
+
+        // Convert back to RGB
+        let r2, g2, b2;
+        if (s === 0) {
+            r2 = g2 = b2 = l; // gray
+        } else {
+            function hue2rgb(p, q, t) {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            }
+            let q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            let p = 2 * l - q;
+            r2 = hue2rgb(p, q, h + 1/3);
+            g2 = hue2rgb(p, q, h);
+            b2 = hue2rgb(p, q, h - 1/3);
+        }
+
+        return `rgb(${Math.round(r2 * 255)}, ${Math.round(g2 * 255)}, ${Math.round(b2 * 255)})`;
+    }
+
+    setInterval(updateGradient, 2000);
+</script>
+<header class="navbar">
+    <div class="brand">Personal Expenses</div>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/Expenses">Expenses</a>
+        <a href="/About">About</a>
+    </nav>
+</header>
+
+<div class="container">
+    @RenderBody()
+</div>
 </body>
 </html>
