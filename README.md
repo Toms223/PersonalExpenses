@@ -242,24 +242,6 @@ The application requires these Microsoft Graph permissions:
 - No sensitive data is logged or exposed in client-side code
 - HTTPS is enforced in production environments
 
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Follow the existing code style and patterns
-4. Add tests for new functionality
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## Support
-
-For support, please open an issue on GitHub or contact the development team.
-
 ## Roadmap
 
 - [ ] Expense categories and tagging system
