@@ -6,10 +6,21 @@ metadata:
   annotations:
     networking.gke.io/managed-certificates: personalexpenses-cert
     kubernetes.io/ingress.global-static-ip-name: personalexpenses-ip
+    kubernetes.io/ingress.class: "gce"
+    ingress.gcp.kubernetes.io/ssl-redirect: "true"
 spec:
-  ingressClassName: gce
   rules:
     - host: personalexpenses.ddns.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-service
+                port:
+                  number: 80
+    - host: www.personalexpenses.ddns.net
       http:
         paths:
           - path: /

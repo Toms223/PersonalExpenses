@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using PersonalExpenses.Extensions;
 using PersonalExpenses.Middleware;
 
@@ -12,6 +13,10 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedProto
+});
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<EnsureUserExistsMiddleware>();
