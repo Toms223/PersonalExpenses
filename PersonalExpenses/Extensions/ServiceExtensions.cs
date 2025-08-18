@@ -3,6 +3,8 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using PersonalExpenses.Data;
 using PersonalExpenses.Model;
@@ -66,6 +68,25 @@ public static class ServiceExtensions
 
         return services;
     }
+    
+    public static IServiceCollection AddForwardedHeaders(this IServiceCollection services)
+    {
+        services.Configure<ForwardedHeadersOptions>(options =>
+        {
+            options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | 
+                                       ForwardedHeaders.XForwardedProto | 
+                                       ForwardedHeaders.XForwardedHost;
+            
+            options.KnownNetworks.Clear();
+            options.KnownProxies.Clear();
+            
+            options.ForwardedForHeaderName = "X-Forwarded-For";
+            options.ForwardedProtoHeaderName = "X-Forwarded-Proto";
+            options.ForwardedHostHeaderName = "X-Forwarded-Host";
+        });
+        
+        return services;
+    }
 
     private static AuthenticationBuilder AddOpenIdMicrosoftOptions(this AuthenticationBuilder builder, string clientId,  string clientSecret)
     {
@@ -82,6 +103,23 @@ public static class ServiceExtensions
 
             options.Events = new OpenIdConnectEvents
             {
+                OnRedirectToIdentityProvider = context =>
+                {
+                    // Look at the forwarded headers
+                    var forwardedProto = context.Request.Headers["X-Forwarded-Proto"].FirstOrDefault();
+                    if (!string.IsNullOrEmpty(forwardedProto))
+                    {
+                        var uriBuilder = new UriBuilder(context.ProtocolMessage.RedirectUri)
+                        {
+                            Scheme = forwardedProto,
+                            Port = forwardedProto == "https" ? 443 : 80
+                        };
+
+                        context.ProtocolMessage.RedirectUri = uriBuilder.Uri.ToString();
+                    }
+
+                    return Task.CompletedTask;
+                },
                 OnTokenValidated = async context =>
                 {
                     ClaimsIdentity claimsIdentity = (ClaimsIdentity)context.Principal.Identity ?? throw new NullReferenceException("Could not find ClaimsIdentity");;

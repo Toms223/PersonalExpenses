@@ -105,7 +105,16 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
      public async Task<ActionResult> AddToCalender(int id, ExpensesView model)
      {
           Expense? expense = await expenseService.GetExpense(id);
-          if(expense != null) await calenderService.AddFixedExpenseEventAsync(expense);
+          if (expense != null)
+          {
+               await calenderService.AddFixedExpenseEventAsync(expense);
+               TempData["SuccessMessage"] = $"Expense '{expense.Name}' was added to Outlook Calendar successfully.";
+          }
+          else
+          {
+               TempData["SuccessMessage"] = $"Failed to add to Outlook Calendar.";
+          }
+          
           return RedirectToAction(nameof(Index), model);
      }
 
