@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: db-env-config
+  namespace: pe
+data:
+  POSTGRES_USER: toms223
+  POSTGRES_DB: expenses

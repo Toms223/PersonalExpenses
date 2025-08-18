@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  namespace: pe
+  labels:
+    app: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    metadata:
+      name: server
+      labels:
+        app: server
+    spec:
+      containers:
+        - name: server
+          envFrom:
+            - configMapRef:
+                name: server-config-map
+          image: europe-west9-docker.pkg.dev/rising-city-464516-e8/personal-expenses/server:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+      restartPolicy: Always

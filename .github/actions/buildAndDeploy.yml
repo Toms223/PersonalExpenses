@@ -1,0 +1,74 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: server
+  IMAGE_TAG: latest
+  GCP_PROJECT: rising-city-464516-e8
+  GCP_REGION: europe-west9
+  GCP_REPOSITORY: personal-expenses
+  K8S_DEPLOYMENT: server
+  K8S_NAMESPACE: pe
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # Step 2: Setup .NET
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '9.0.x'
+
+      # Step 5: Setup Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Step 6: Authenticate to Google Artifact Registry
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Configure Docker for Google Artifact Registry
+        run: |
+          gcloud auth configure-docker ${GCP_REGION}-docker.pkg.dev
+
+      # Step 7: Build Docker image
+      - name: Build Docker image
+        run: |
+          docker buildx build \
+          --platform linux/amd64,linux/arm64 \
+          -t ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT}/${GCP_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG} \
+          --push \
+          . -f ./Deployment/Docker/Dockerfile
+
+      # Step 8: Push Docker image
+      - name: Push Docker image
+        run: |
+          docker push ${GCP_REGION}-docker.pkg.dev/${GCP_PROJECT}/${GCP_REPOSITORY}/${IMAGE_NAME}:${IMAGE_TAG}
+
+      # Step 9: Setup kubectl
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Get kubeconfig
+        run: |
+          gcloud container clusters get-credentials personal-expenses --zone europe-west9 --project ${{ env.GCP_PROJECT }}
+
+      # Step 10: Restart Kubernetes Deployment
+      - name: Restart Kubernetes Deployment
+        run: |
+          kubectl rollout restart deployment/${K8S_DEPLOYMENT} -n ${K8S_NAMESPACE}
+          kubectl rollout status deployment/${K8S_DEPLOYMENT} -n ${K8S_NAMESPACE} --timeout=5m
