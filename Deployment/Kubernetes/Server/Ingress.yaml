@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: server-ingress
+  namespace: pe
+  annotations:
+    networking.gke.io/managed-certificates: personalexpenses-cert
+    kubernetes.io/ingress.global-static-ip-name: personalexpenses-ip
+spec:
+  ingressClassName: gce
+  rules:
+    - host: personalexpenses.ddns.net
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: server-service
+                port:
+                  number: 80
