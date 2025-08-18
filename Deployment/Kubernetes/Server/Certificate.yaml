@@ -1,0 +1,8 @@
+apiVersion: networking.gke.io/v1
+kind: ManagedCertificate
+metadata:
+  name: personalexpenses-cert
+  namespace: pe
+spec:
+  domains:
+    - personalexpenses.ddns.net
