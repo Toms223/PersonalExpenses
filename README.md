@@ -59,5 +59,15 @@ A modern **web application** for tracking, analyzing, and managing personal expe
 
 - **Automation:** Reduce manual tracking and avoid missed payments  
 - **Clarity:** Understand spending patterns and monthly trends at a glance  
-- **Integration:** Combine financial management with your digital calendar  
+- **Integration:** Combine financial management with your digital calendar
+
+---
+
+## Roadmap 
+- [ ] Expense categories and tagging system 
+- [ ] Budget planning and spending alerts 
+- [ ] Data export (PDF, Excel, CSV)
+- [ ] API endpoints for third-party integrations 
+- [ ] (Seperate) Mobile App 
+- [ ] Google OICD and Calendar integration 
 - **Privacy:** Secure and user-specific experience  
