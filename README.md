@@ -1,5 +1,12 @@
 # Personal Expenses Tracker
 
+**Contact & About Me**  
+- **Name:** Tomás Martinho  
+- **LinkedIn:** [linkedin.com/in/tomás-martinho-449b5b232](https://www.linkedin.com/in/tom%C3%A1s-martinho-449b5b232/)  
+- **Bio:** A recently graduated backend enthusiast with a passion for building robust microservices, implementing CI/CD pipelines, and architecting cloud-native solutions using Kubernetes and CNCF projects.  
+
+---
+
 A modern **web application** for tracking, analyzing, and managing personal expenses—designed to give you **control, clarity, and automation** over your finances.
 
 ---
