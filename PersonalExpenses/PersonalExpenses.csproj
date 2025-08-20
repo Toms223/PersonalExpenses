@@ -21,4 +21,10 @@
       <Folder Include="Deployment\Kubernetes\" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Expenses\Regular\_RegularExpenseEditForm.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Expenses\Regular\_RegularExpenseForm.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Expenses\Regular\_RegularExpenseList.cshtml" />
+    </ItemGroup>
+
 </Project>

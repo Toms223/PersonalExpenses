@@ -1,0 +1,45 @@
+@model PersonalExpenses.ViewModel.ExpensesView
+@{
+    var excluded = ViewData["ExcludeFields"] as HashSet<string> ?? new HashSet<string>();
+}
+
+@if (!excluded.Contains("OrderBy"))
+{
+    <input type="hidden" name="OrderBy" value="@Model.OrderBy" />
+}
+@if (!excluded.Contains("EditId"))
+{
+    <input type="hidden" name="EditId" value="@Model.EditId" />
+}
+@if (!excluded.Contains("Offset"))
+{
+    <input type="hidden" name="Offset" value="@Model.Offset" />
+}
+@if (!excluded.Contains("Limit"))
+{
+    <input type="hidden" name="Limit" value="@Model.Limit" />
+}
+@if (!excluded.Contains("MonthView"))
+{
+    <input type="hidden" name="MonthView" value="@(Model.MonthView ? "true" : "false")" />
+}
+@if (!excluded.Contains("SelectedMonth"))
+{
+    <input type="hidden" name="SelectedMonth" value="@Model.SelectedMonth" />
+}
+@if (!excluded.Contains("SelectedYear"))
+{
+    <input type="hidden" name="SelectedYear" value="@Model.SelectedYear" />
+}
+@if (!excluded.Contains("StartDate"))
+{
+    <input type="hidden" name="StartDate" value="@Model.StartDate" />
+}
+@if (!excluded.Contains("EndDate"))
+{
+    <input type="hidden" name="EndDate" value="@Model.EndDate" />
+}
+@if (!excluded.Contains("ContinuousView"))
+{
+    <input type="hidden" name="ContinuousView" value="@(Model.ContinuousView ? "true" : "false")" />
+}

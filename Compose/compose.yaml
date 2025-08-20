@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-  personalexpenses:
-    build:
-      context: ..
-      dockerfile: ./Deployment/Docker/Dockerfile
-    environment:
-      POSTGRES_DB: expenses
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_HOST: "db"
-      POSTGRES_PORT: "5432"
-      MICROSOFT_CLIENT_ID: ${MICROSOFT_CLIENT_ID}
-      MICROSOFT_CLIENT_SECRET: ${MICROSOFT_CLIENT_SECRET}
-    ports:
-      - "80:8080"
-    networks:
-      - server
   db:
     image: postgres:17
     environment:

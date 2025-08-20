@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Html;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using PersonalExpenses.ViewModel;
 
 namespace PersonalExpenses.Helpers.Expenses;
 
-public static class ExpenseUrlHelper
+public static class ExpenseHelper
 {
     public static string GenerateExpenseLink(this IUrlHelper url, string controller, string action, ExpensesView model, object newValues)
     {
@@ -18,5 +21,14 @@ public static class ExpenseUrlHelper
             }
         );
         return url.Action(action, controller, routeValues) ?? "";
+    }
+    public static Task<IHtmlContent> WithExcludedHiddenFields(this IHtmlHelper helper, ExpensesView model, params string[] excludedFields)
+    {
+
+        ViewDataDictionary excludedFieldsDictionary = new ViewDataDictionary(helper.ViewData)
+        {
+            { "ExcludeFields", new HashSet<string>(excludedFields)}
+        };
+        return helper.PartialAsync("_StateHiddenFields", model, excludedFieldsDictionary);
     }
 }

@@ -1,0 +1,43 @@
+@using PersonalExpenses.Helpers.Expenses
+@using PersonalExpenses.Model
+@model PersonalExpenses.ViewModel.ExpensesView
+
+@{
+    var monthToShow = Model.MonthlyExpenses
+        .FirstOrDefault(m => m.Year == (Model.SelectedYear == 0 ? DateTime.Now.Year : Model.SelectedYear) &&
+                             m.MonthOfYear == (MonthOfYear)(Model.SelectedMonth == 0 ? DateTime.Now.Month - 1 : Model.SelectedMonth));
+}
+
+@if (monthToShow != null)
+{
+    <div class="monthly-expense-header">
+        <h2>@monthToShow.MonthOfYear @monthToShow.Year</h2>
+        <p><strong>Total:</strong> @monthToShow.TotalSpent.ToString("C")</p>
+        <p><strong>Expected Total:</strong> @monthToShow.ExpectedMonthTotal.ToString("C")</p>
+    </div>
+    int index = 0;
+    <ul class="expense-list">
+        @foreach (var expense in monthToShow.Expenses)
+        {
+            <li class="enter-animation" style="animation-delay:@(index * 0.1 + 0.1)s;">
+                @if (Model.EditId == expense.Id)
+                {
+                    @await Html.PartialAsync("_RegularExpenseEditForm", new Tuple<PersonalExpenses.ViewModel.ExpensesView, Expense>(Model, expense))
+                    @await Html.PartialAsync("_ExpenseDeleteForm", new Tuple<PersonalExpenses.ViewModel.ExpensesView, Expense>(Model, expense))
+                }
+                else
+                {
+                    <span>@expense.Date.ToString("yyyy-MM-dd")</span>
+                    <span>@expense.Name</span>
+                    <span>@expense.Amount.ToString("C")</span>
+                    <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new { EditId = expense.Id })" class="clear-filter">Edit</a>
+                }
+            </li>
+            index++;
+        }
+    </ul>
+}
+else
+{
+    <p>No expenses found for @Model.SelectedMonth @Model.SelectedYear.</p>
+}

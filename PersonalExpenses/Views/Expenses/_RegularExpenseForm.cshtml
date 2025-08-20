@@ -1,0 +1,16 @@
+@model PersonalExpenses.ViewModel.ExpensesView
+
+<form class="expense-form" action="/Expenses/AddExpense" method="post">
+    <label for="name">Name:</label>
+    <input type="text" id="name" name="name" placeholder="e.g. Coffee" required />
+    
+    <label for="amount">Amount:</label>
+    <input type="number" id="amount" name="amount" step="0.01" placeholder="e.g. 3.50" required />
+    
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required />
+    
+    @await Html.PartialAsync("_StateHiddenFields", Model)
+    
+    <button type="submit">Add Expense</button>
+</form>

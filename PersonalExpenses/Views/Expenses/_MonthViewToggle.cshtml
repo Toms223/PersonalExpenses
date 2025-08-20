@@ -1,0 +1,14 @@
+@using PersonalExpenses.Helpers.Expenses
+@model PersonalExpenses.ViewModel.ExpensesView
+
+<div class="view-toggle">
+    <form method="get" action="/Expenses/Index" style="display:inline;">
+        @await Html.WithExcludedHiddenFields(Model, "MonthView")
+        <input type="hidden" name="MonthView" value="@(!Model.MonthView ? "true" : "false")" />
+        <label class="switch">
+            <input type="checkbox" data-autosubmit @(Model.MonthView ? "checked" : "")>
+            <span class="slider"></span>
+        </label>
+        <span class="glass-label">@(Model.MonthView ? "Monthly View" : "All Expenses View")</span>
+    </form>
+</div>

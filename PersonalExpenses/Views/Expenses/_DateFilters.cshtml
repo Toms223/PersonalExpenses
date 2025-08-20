@@ -1,0 +1,21 @@
+@using PersonalExpenses.Helpers.Expenses
+@model PersonalExpenses.ViewModel.ExpensesView
+
+<form class="date-filters" method="get" asp-controller="Expenses" asp-action="Index">
+    @await Html.WithExcludedHiddenFields(Model, "StartDate", "EndDate")
+    
+    <div class="date-filter-group">
+        <label for="StartDate">Start Date:</label>
+        <input type="date" id="StartDate" name="StartDate" value="@(Model.StartDate?.ToString("yyyy-MM-dd"))" />
+    </div>
+    
+    <div class="date-filter-group">
+        <label for="EndDate">End Date:</label>
+        <input type="date" id="EndDate" name="EndDate" value="@(Model.EndDate?.ToString("yyyy-MM-dd"))" />
+    </div>
+
+    <div class="filter-buttons">
+        <button type="submit" class="apply-filter">Apply Filter</button>
+        <a href="@Url.GenerateExpenseLink("Expenses", "Index", Model, new { StartDate = (DateOnly?)null, EndDate = (DateOnly?)null })" class="clear-filter">Clear</a>
+    </div>
+</form>

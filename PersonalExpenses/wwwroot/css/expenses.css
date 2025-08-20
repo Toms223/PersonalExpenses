@@ -1,0 +1,366 @@
+:root{
+    --bg:#0A0A0A;
+    --fg:#ffffff;
+    --fg-dim:rgba(255,255,255,.85);
+    --glass:rgba(255,255,255,.05);
+    --glass-strong:rgba(255,255,255,.08);
+    --border:rgba(255,255,255,.12);
+    --accent1:#0A84FF;
+    --accent2:#BF5AF2;
+    --danger:#FF3B30;
+}
+
+/* Page title */
+.page-title{
+    text-align:center;
+    font-size:2.5rem;
+    margin: 0 0 0.75rem 0;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+.page-header{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* Universal glass panel helpers (applied to specific areas below) */
+.panel{
+    background:var(--glass);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    border-radius:1rem;
+    box-shadow:0 4px 30px rgba(0,0,0,.25);
+}
+
+/* Top controls (title + order) */
+.order-button{
+    background:var(--glass);
+    border:1px solid var(--border);
+    border-radius:.6rem;
+    padding:.4rem;
+    margin-left:.5rem;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    transition:background .2s ease, transform .2s ease, box-shadow .2s ease;
+}
+.order-button:hover{
+    background:var(--glass-strong);
+    transform:translateY(-1px);
+    box-shadow:0 8px 20px rgba(10,132,255,.25);
+}
+.order-button svg{ width:24px; height:24px; fill:#fff; }
+
+/* Month navigation (Previous / Next) */
+.month-navigation{
+    display:flex;
+    gap:1rem; justify-content:center; margin-bottom:1rem;
+}
+.month-navigation a{
+    display:inline-block;
+    padding:.6rem 1.1rem;
+    border-radius:.75rem;
+    font-weight:600;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    box-shadow:0 8px 20px rgba(10,132,255,.28);
+    transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+    text-decoration:none;
+    border:none;
+}
+.month-navigation a:hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px rgba(10,132,255,.38);
+}
+
+/* Month filter (dropdowns) */
+.month-filter{
+    display:flex;
+    justify-content:center; margin-bottom:1rem;
+}
+.month-filter form{
+    display:flex; gap:1rem; align-items:center; flex-wrap:wrap; justify-content:center;
+    padding:1rem 1.25rem;
+    max-width:900px;
+    width:100%;
+}
+.month-filter label{
+    font-weight:600; font-size:.95rem; color:var(--fg-dim);
+}
+.month-filter select{
+    min-width:120px;
+}
+
+/* Date filters panel */
+.date-filters{
+    display:flex;
+    gap:1rem; justify-content:center; margin-bottom:1rem; flex-wrap:wrap;
+    padding:1rem 1.25rem;
+    max-width:1000px; margin-left:auto; margin-right:auto;
+}
+.date-filter-group{ display:flex; flex-direction:column; align-items:center;
+}
+.date-filter-group label{
+    font-weight:600; margin-bottom:.25rem; font-size:.9rem; color:var(--fg-dim);
+}
+.filter-buttons {
+    align-content: end;
+}
+
+/* Inputs (all) */
+.month-filter select,
+.month-filter input[type="number"],
+.date-filter-group input,
+.expense-form input[type="text"],
+.expense-form input[type="number"],
+.expense-form input[type="date"],
+.expense-list input[type="text"],
+.expense-list input[type="number"],
+.expense-list input[type="date"]{
+    padding:.6rem .8rem;
+    border:1px solid var(--border);
+    border-radius:.75rem;
+    font-size:.95rem;
+    background:var(--glass-strong);
+    color:var(--fg);
+    outline:none;
+    transition:border .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.month-filter select:focus,
+.month-filter input[type="number"]:focus,
+.date-filter-group input:focus,
+.expense-form input:focus,
+.expense-list input:focus{
+    border-color:var(--accent1);
+    box-shadow:0 0 0 3px rgba(10,132,255,.25);
+    background:rgba(255,255,255,.12);
+}
+
+/* Buttons */
+.apply-filter,
+.expense-form button:not(.delete),
+.expense-list button:not(.delete){
+    padding:.6rem 1.1rem;
+    border:none;
+    border-radius:.75rem;
+    font-weight:600;
+    cursor:pointer;
+    color:#fff;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    box-shadow:0 8px 20px rgba(10,132,255,.28);
+    transition:transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.apply-filter:hover,
+.expense-form button:not(.delete):hover,
+.expense-list button:not(.delete):hover{
+    transform:translateY(-2px);
+    box-shadow:0 12px 28px rgba(10,132,255,.38);
+}
+
+.clear-filter{
+    display:inline-block;
+    padding:.55rem 1rem;
+    border-radius:.75rem;
+    color:#fff;
+    background:var(--glass);
+    border:1px solid var(--border);
+    transition:transform .2s ease, background .2s ease;
+    text-decoration:none;
+}
+.clear-filter:hover{ background:var(--glass-strong); transform:translateY(-1px);
+}
+
+/* Toggle switch (Apple-like) */
+.switch{ position:relative; display:inline-block; width:54px; height:30px; vertical-align:middle;
+}
+.switch input{ opacity:0; width:0; height:0; }
+.slider{
+    position:absolute;
+    inset:0;
+    background:rgba(255,255,255,.2);
+    border:1px solid var(--border);
+    cursor:pointer; transition:.35s; border-radius:999px;
+    box-shadow:inset 0 0 0 0 rgba(0,0,0,.1);
+}
+.slider::before{
+    content:""; position:absolute; height:24px; width:24px; left:3px; bottom:3px;
+    background:#fff; border-radius:50%;
+    transition:.35s;
+    box-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+.switch input:checked + .slider{
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    box-shadow:inset 0 0 0 1px rgba(255,255,255,.15);
+}
+.switch input:checked + .slider::before{ transform:translateX(24px);
+}
+
+/* Expense form (both modes) */
+.expense-form{
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    gap:1rem 1.25rem;
+    align-items:center;
+    margin: 1rem auto 2rem;
+    padding:1.25rem;
+    max-width:1000px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+    animation: fadeSlideIn 0.8s ease forwards;
+}
+
+.edit-form{
+    display:grid;
+    grid-template-columns: 1fr 2fr;
+    gap:1rem 1.25rem;
+    align-items:center;
+    padding:1.25rem;
+    max-width:1000px;
+}
+
+.expense-form > *:last-child {
+    grid-column: span 2;
+    /* make last item take full width */
+}
+.expense-form label{ font-weight:600; color:var(--fg-dim);
+}
+
+/* Expense list */
+ul.expense-list{ list-style:none; padding:0; margin:0; max-width:1000px; margin-left:auto; margin-right:auto;
+}
+ul.expense-list li{
+    display:flex; flex-wrap:wrap; justify-content:space-between;
+    gap:.75rem;
+    padding:.9rem 1rem;
+    margin-bottom:.6rem;
+    border-radius:.9rem;
+    background:var(--glass);
+    border:1px solid var(--border);
+    transition:transform .2s ease, background .2s ease;
+    flex-direction: column;
+}
+.expense-list li.enter-animation {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeSlideIn 0.6s ease forwards;
+}
+ul.expense-list li:hover{ transform:translateY(-2px); background:var(--glass-strong);
+}
+ul.expense-list li span{ color:var(--fg-dim); }
+
+/* Monthly header */
+.monthly-expense-header{
+    max-width:1000px;
+    margin:1rem auto 1.25rem; padding:1rem 1.25rem;
+}
+.monthly-expense-header h2{
+    margin:0 0 .25rem 0;
+    background:linear-gradient(135deg,var(--accent1),var(--accent2));
+    -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+}
+.monthly-expense-header p{ margin:.15rem 0; color:var(--fg-dim);
+}
+
+/* View toggles & month controls containers */
+.view-toggle, .month-controls{
+    display:flex;
+    gap:1rem; justify-content:center; align-items:center;
+    margin: .75rem auto 1rem; max-width:1000px;
+}
+
+/* Delete button */
+.delete{
+    background:linear-gradient(135deg,var(--danger), #C62920);
+    border-radius:2rem; border:none; padding:.45rem .8rem;
+    font-size:.95rem; color:#fff; font-weight:700;
+    cursor:pointer; transition:transform .2s ease, box-shadow .2s ease;
+}
+.delete:hover{ transform:translateY(-1px);
+    box-shadow:0 8px 18px rgba(255,59,48,.35); }
+
+/* Animations (keep existing logic) */
+@keyframes spin-down { from{transform:rotate(0deg);} to{transform:rotate(180deg);} }
+@keyframes spin-up   { from{transform:rotate(180deg);} to{transform:rotate(0deg);} }
+.order-button.desc{ transform:rotate(180deg);
+}
+.order-button.spin{ animation:spin-up .5s ease; }
+.order-button.spin.desc{ animation:spin-down .5s ease;
+}
+
+/* Panels applied to groups */
+.date-filters, .month-filter form, .expense-form, .monthly-expense-header { composes: panel;
+} /* (if composes unsupported, we also set below) */
+/* Fallback when 'composes' isn’t available */
+.date-filters, .month-filter form, .expense-form, .monthly-expense-header{
+    background:var(--glass);
+    backdrop-filter:blur(20px);
+    border:1px solid var(--border);
+    border-radius:1rem;
+    box-shadow:0 4px 30px rgba(0,0,0,.25);
+}
+
+/* Responsive */
+@media (max-width: 768px){
+    .expense-form{ grid-template-columns: 1fr;
+    }
+    .month-filter form{ flex-direction:column; gap:.75rem;
+    }
+    .month-navigation{ flex-direction:column; align-items:center; gap:.5rem;
+    }
+}
+
+.glass-label {
+    display: inline-block;
+    padding: 0.3em 0.6em;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #fff;
+    font-weight: 500;
+
+    /* Start invisible and slightly above */
+    opacity: 0;
+    transform: translateY(-10px);
+
+    /* Animate on load */
+    animation: fadeInFloat 1s ease forwards;
+}
+
+/* Keyframes for fade + float */
+@keyframes fadeInFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(2px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Keyframes for fade + slide-up */
+@keyframes fadeSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    60% {
+        opacity: 1;
+        transform: translateY(-5px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
