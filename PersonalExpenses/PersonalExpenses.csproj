@@ -19,6 +19,7 @@
     <ItemGroup>
       <Folder Include="Deployment\Docker\" />
       <Folder Include="Deployment\Kubernetes\" />
+      <Folder Include="wwwroot\js\" />
     </ItemGroup>
 
     <ItemGroup>

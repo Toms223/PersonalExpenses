@@ -4,32 +4,43 @@ namespace PersonalExpenses.ViewModel;
 
 public class ExpensesView
 {
-    public List<Expense>? Expenses { get; set; }
-    public Error? Error { get; set; }
-    public OrderBy OrderBy { get; set; }
-    public DateOnly? StartDate { get; set; }
-    public DateOnly? EndDate { get; set; }
-    
-    public bool ContinuousView { get; set; }
-    public int EditId { get; set; }
-    public int Offset { get; set; }
-    public int Limit { get; set; }
-    
-    public bool MonthView { get; set; }
-    
-    public int SelectedYear { get; set; }
-    public int SelectedMonth { get; set; }
+    public List<Expense> CurrentMonthExpenses { get; set; } = [];
 
-    public List<MonthlyExpenses>? MonthlyExpenses
+    public int CurrentMonthTotal
+    {
+        get { return (int)Math.Round(CurrentMonthExpenses.Sum(e => e.Amount)); }
+    }
+    
+    public int PreviousMonthTotal
+    {
+        get { return (int)Math.Round(PreviousMonthExpenses.Sum(e => e.Amount)); }
+    }
+
+    public int PreviousMonthDifference
     {
         get
         {
-            return Expenses?.GroupBy(e => new {e.Date.Year, e.Date.Month}).Select(g => new MonthlyExpenses
+            if (CurrentMonthTotal == 0) return 0;
+            if(PreviousMonthTotal == 0) return 0;
+            if (PreviousMonthTotal > CurrentMonthTotal)
             {
-                MonthOfYear = (MonthOfYear)g.Key.Month - 1,
-                Year = g.Key.Year,
-                Expenses = g.ToList()
-            }).OrderBy(e => e.Year).ThenBy(e => e.MonthOfYear).ToList();
+                return CurrentMonthTotal / PreviousMonthTotal * -100;
+            }
+
+            if (PreviousMonthTotal == CurrentMonthTotal)
+            {
+                return 0;
+            }
+            return PreviousMonthTotal / CurrentMonthTotal * 100;
         }
     }
+    public List<Category> CurrentMonthCategories { get; set; } = [];
+    public List<Expense> PreviousMonthExpenses { get; set; } = [];
+    
+    public User User { get; set; } =  new User();
+    public Error? Error { get; set; }
+    public int Month { get; set; }
+    
+    public int Year { get; set; }
+    public int EditId { get; set; }
 }

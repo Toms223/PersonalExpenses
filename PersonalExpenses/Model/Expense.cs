@@ -12,6 +12,8 @@ public class Expense
     
     public int UserId { get; set; }
     
+    public int CategoryId { get; set; }
+    
     public bool Continuous { get; set; }
     
     public bool Fixed {get; set;}

@@ -1,0 +1,19 @@
+@model PersonalExpenses.ViewModel.ExpensesView
+
+<div>
+    <p>This month</p>
+    <div>
+        <h2>
+            @Model.CurrentMonthTotal 
+        </h2>
+        @if (Model.User.Limit != 0)
+        {
+            <h3>/ @Model.User.Limit</h3>  
+        }
+    </div>
+    <div></div>
+    <div>
+        <p>@Model.PreviousMonthDifference% vs last month</p>
+    </div>
+</div>
+

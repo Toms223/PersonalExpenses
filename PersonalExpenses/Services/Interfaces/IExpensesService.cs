@@ -10,11 +10,10 @@ public interface IExpensesService
     
     Task<Expense> CreateContinuousExpense(string name, float amount, DateOnly date, int period, bool fixedExpense, int userId);
     Task<Expense> UpdateExpense(int id, string? name, float? amount, DateOnly? date, int userId);
-    Task<bool> DeleteExpenseAsync(int id, int userId);
-    Task<List<Expense>> GetAllExpensesAsync(int offset, int limit, bool continuous, int userId);
     
-    Task<List<Expense>> GetAllExpensesByDateAsync(DateOnly startDate, DateOnly endDate, bool continuous, int userId);
-    Task<List<Expense>> GetAllExpensesFromDateAsync(DateOnly startDate, bool continuous, int userId);
-    Task<List<Expense>> GetAllExpensesUntilDateAsync(DateOnly endDate, bool continuous, int userId);
     Task<Expense> UpdateContinuousExpense(int id, string? name, float? amount, DateOnly? date, int? period, bool? fixedExpense, int userId);
+    Task<bool> DeleteExpense(int id, int userId);
+    
+    Task<List<Expense>> GetExpensesByMonthAndYear(int userId, int month, int year);
+    
 }

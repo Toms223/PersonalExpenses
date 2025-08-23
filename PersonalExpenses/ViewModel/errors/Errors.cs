@@ -9,7 +9,7 @@ public static class Errors
         return ex switch
         {
             ExpenseNotFoundException expenseNotFoundException => new Error{Code = 404, Message = expenseNotFoundException.Message},
-            _ => new Error{Code = 404, Message = ex.Message}
+            _ => new Error{Code = 500, Message = ex.Message}
         };
     }
 }
