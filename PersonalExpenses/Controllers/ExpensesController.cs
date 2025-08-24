@@ -26,6 +26,12 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                {
                     model.User = await userService.GetUserById(userId);
                }
+
+               if (model.Year == 0 || model.Month == 0)
+               {
+                    model.Year = DateTime.Now.Year;
+                    model.Month = DateTime.Now.Month;
+               }
                DateOnly currentDate = DateOnly.Parse($"{model.Year}-{model.Month}-1");
                List<Expense> currentMonthExpenses =
                     await expenseService.GetExpensesByMonthAndYear(userId, currentDate.Month, currentDate.Year);
@@ -35,7 +41,7 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                     await expenseService.GetExpensesByMonthAndYear(userId, previousDate.Month, previousDate.Year);
                model.PreviousMonthExpenses = previousMonthExpenses;
 
-               List<int> currentMonthCategoryIds = currentMonthExpenses.Select(x => x.CategoryId).Distinct().ToList();
+               List<int> currentMonthCategoryIds = currentMonthExpenses.Where(e => e.CategoryId != null).Select(e => (int)e.CategoryId).Distinct().ToList();
                model.CurrentMonthCategories = (await Task.WhenAll(
                     currentMonthCategoryIds.Select(categoryService.GetCategory)
                )).ToList();

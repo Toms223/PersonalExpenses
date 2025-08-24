@@ -3,7 +3,7 @@ CREATE TABLE "Users" (
     "Name" VARCHAR(255),
     "Email" VARCHAR(255),
     "HashedPassword" VARCHAR(255),
-    "Limit" INT DEFAULT 0,
+    "Limit" INT DEFAULT 0
 );
 
 CREATE TABLE "Categories" (
@@ -19,7 +19,7 @@ CREATE TABLE "Expenses" (
     "Amount" REAL NOT NULL ,
     "Date" DATE NOT NULL ,
     "UserId" INT,
-    "CategoryId" INT NULL,
+    "CategoryId" INT DEFAULT 0,
     "Continuous" BOOLEAN,
     "Period" INT,
     "Fixed" BOOLEAN,

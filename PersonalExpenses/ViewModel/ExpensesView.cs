@@ -16,22 +16,24 @@ public class ExpensesView
         get { return (int)Math.Round(PreviousMonthExpenses.Sum(e => e.Amount)); }
     }
 
+    public int RemainingBudget => User.Limit - CurrentMonthTotal;
+
     public int PreviousMonthDifference
     {
         get
         {
             if (CurrentMonthTotal == 0) return 0;
-            if(PreviousMonthTotal == 0) return 0;
+            if (PreviousMonthTotal == 0) return 0;
             if (PreviousMonthTotal > CurrentMonthTotal)
             {
-                return CurrentMonthTotal / PreviousMonthTotal * -100;
+                return -1 * (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100);
             }
 
             if (PreviousMonthTotal == CurrentMonthTotal)
             {
                 return 0;
             }
-            return PreviousMonthTotal / CurrentMonthTotal * 100;
+            return (int)Math.Round((float)PreviousMonthTotal / CurrentMonthTotal * 100);
         }
     }
     public List<Category> CurrentMonthCategories { get; set; } = [];

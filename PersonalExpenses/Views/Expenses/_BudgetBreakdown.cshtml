@@ -1,19 +1,26 @@
 @model PersonalExpenses.ViewModel.ExpensesView
 
-<div>
-    <p>This month</p>
-    <div>
-        <h2>
-            @Model.CurrentMonthTotal 
-        </h2>
+<div class="box">
+    <p class="on-glass">This month</p>
+    <div class="total">
+
+        <h1 class="total-amount">
+            @Model.CurrentMonthTotal€
+        </h1>
         @if (Model.User.Limit != 0)
         {
-            <h3>/ @Model.User.Limit</h3>  
+            <h1 class="budget-amount">/ @Model.User.Limit€</h1>
         }
     </div>
-    <div></div>
-    <div>
-        <p>@Model.PreviousMonthDifference% vs last month</p>
+    <div class="bar">
+        <div class="progress" style="width:@((float)Model.CurrentMonthTotal / Model.User.Limit * 100)%"></div>
+    </div>
+    <div class="stats">
+        <div class="month-difference">
+            <p class="@(Model.PreviousMonthDifference > 0 ? "positive" : "negative")">@Model.PreviousMonthDifference%</p>
+            <p> vs last month</p>
+        </div>
+        <p class="@(Model.User.Limit - Model.CurrentMonthTotal > 0 ? "positive" : "negative")">@(Model.User.Limit - Model.CurrentMonthTotal > 0 ? "Remaining" : "Over") @(Model.User.Limit - Model.CurrentMonthTotal)€</p>
     </div>
 </div>
 

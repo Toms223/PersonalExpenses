@@ -28,6 +28,8 @@ public static class ServiceExtensions
 
         services.AddDbContext<ExpensesDbContext>(options => options.UseNpgsql(connectionString));
         services.AddScoped<IExpensesService,  ExpensesService>();
+        services.AddScoped<IUserService, UserService>();
+        services.AddScoped<ICategoryService, CategoryService>();
         return services;
     }
 
