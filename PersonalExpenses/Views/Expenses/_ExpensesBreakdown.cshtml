@@ -1,3 +1,56 @@
+@using System.Text.Json
+@using PersonalExpenses.Model
 @model PersonalExpenses.ViewModel.ExpensesView
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+@{
+    var categoryNames = Model.CurrentMonthCategories.Select(c => c.Name).ToList();
+    var categoryTotals = Model.CurrentMonthCategories.Select(c => Model.CurrentMonthExpenses
+            .Where(e => e.CategoryId == c.Id)
+            .Sum(e => e.Amount))
+        .ToList();
+    var categoryColors = Model.CurrentMonthCategories.Select(c => '#' + c.Color).ToList();
+    var categoryData = categoryNames
+        .Zip(categoryTotals, (name, total) => new { Name = name, Total = total })
+        .Zip(categoryColors, (prev, color) => new { prev.Name, prev.Total, Color = color })
+        .ToList();
+}
+
+
+<div class="box">
+    <div class="chart-box">
+        <canvas id="expensesChart" width="400" height="400" style="max-width: 30vh; max-height: 30vh;"></canvas>
+        <div class="chart-description">
+            @foreach (var category in categoryData)
+            {
+                <div class="ball" style="background-color: @category.Color;"></div>
+                <div></div>
+                <div class="chart-description-text">
+                    <p>@category.Name</p>
+                    <p class="on-glass">@category.Total€</p>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<script>
+    // Data passed from server
+    var labels = @Html.Raw(JsonSerializer.Serialize(categoryNames));
+    var data = @Html.Raw(JsonSerializer.Serialize(categoryTotals));
+    var colors = @Html.Raw(JsonSerializer.Serialize(categoryColors));
+
+    new Chart("expensesChart", {
+        type: "doughnut",
+        data: {
+            datasets: [{
+                backgroundColor: colors,
+                data: data,
+                borderWidth: 0
+            }]
+        },
+        options: {
+            cutout: '60%',
+        }
+    });
+</script>

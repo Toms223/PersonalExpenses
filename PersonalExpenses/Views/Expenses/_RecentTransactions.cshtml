@@ -1,0 +1,27 @@
+@using PersonalExpenses.Model
+@model PersonalExpenses.ViewModel.ExpensesView
+
+
+<div class="box recent">
+    <h1>Monthly Transactions</h1>
+    <div style="height: 20vh; width:100%; overflow-y: auto; border: none;">
+    
+        @foreach (Expense expense in Model.CurrentMonthExpenses)
+        {
+            <div class="expense">
+                <p>@expense.Name</p>
+                <p>@expense.Amount€</p>
+                <div class="expense-type">
+                    @if (expense.Continuous)
+                    {
+                        <img class="icon" src="images/continuous.svg" alt="Continuous"/>
+                    }
+                    @if (expense.Fixed)
+                    {
+                        <img class="icon" src="images/fixed.svg" alt="Fixed"/>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</div>

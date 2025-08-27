@@ -6,13 +6,4 @@ public class Category
     public string Name { get; set; }
     
     public string Color { get; set; }
-    public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
-
-    public float Total
-    {
-        get
-        {
-            return Expenses.Sum(e => e.Amount);
-        }
-    }
 }

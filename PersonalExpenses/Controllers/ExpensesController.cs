@@ -55,7 +55,7 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
 
      [HttpPost]
      [Authorize]
-     public async Task<ActionResult> AddExpense(string name, float amount, DateOnly date, ExpensesView model)
+     public async Task<ActionResult> AddExpense(string name, float amount, DateOnly date, int? categoryId, ExpensesView model)
      {
           string? userIdClaim = User.FindFirst("UserId")?.Value;
           if (userIdClaim == null)
@@ -64,13 +64,13 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                return RedirectToAction("Index", "Home");
           }
           int userId = int.Parse(userIdClaim);
-          await expenseService.CreateExpense(name, amount, date, userId);
+          await expenseService.CreateExpense(name, amount, date, categoryId, userId);
           return RedirectToAction(nameof(Index), model);
      }
      
      [HttpPost]
      [Authorize]
-     public async Task<ActionResult> AddContinuousExpense(string name, float amount, DateOnly date, int period, bool fixedExpense, ExpensesView model)
+     public async Task<ActionResult> AddContinuousExpense(string name, float amount, DateOnly date, int period, bool fixedExpense, int? categoryId, ExpensesView model)
      {
           string? userIdClaim = User.FindFirst("UserId")?.Value;
           if (userIdClaim == null)
@@ -79,7 +79,7 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                return RedirectToAction("Index", "Home");
           }
           int userId = int.Parse(userIdClaim);
-          await expenseService.CreateContinuousExpense(name, amount, date, period, fixedExpense, userId);
+          await expenseService.CreateContinuousExpense(name, amount, date, period, fixedExpense, categoryId, userId);
           return RedirectToAction(nameof(Index), model);
      }
      

@@ -8,12 +8,60 @@ public class ExpensesView
 
     public int CurrentMonthTotal
     {
-        get { return (int)Math.Round(CurrentMonthExpenses.Sum(e => e.Amount)); }
+        get
+        {
+            float currentTotal = CurrentMonthExpenses.Sum(e => e.Amount);
+            float upToSum = 0;
+            foreach (var expense in CurrentMonthExpenses)
+            {
+                if(!expense.Continuous || !expense.Fixed) continue;
+                DateOnly date = expense.Date;
+                while (date < DateOnly.FromDateTime(DateTime.Now))
+                {
+                    upToSum += expense.Amount;
+                    date = date.AddDays(expense.Period);
+                }
+            }
+            return (int)Math.Round(currentTotal + upToSum);
+        }
     }
-    
+
+    public int ExpectedMonthTotal
+    {
+        get
+        {
+            float currentSum = CurrentMonthTotal;
+            float expectedSum = 0;
+            DateOnly currentDate = DateOnly.FromDateTime(DateTime.Now.Date);
+            foreach (var expense in CurrentMonthExpenses)
+            {
+                if(!expense.Continuous || !expense.Fixed) continue;
+                DateOnly date = expense.Date.AddDays(expense.Period);
+                while (date.Month == currentDate.Month && date.Year == currentDate.Year)
+                {
+                    expectedSum += expense.Amount;
+                    date = date.AddDays(expense.Period);
+                }
+            }
+            return (int)Math.Round(currentSum + expectedSum);
+        }
+    }
+
     public int PreviousMonthTotal
     {
-        get { return (int)Math.Round(PreviousMonthExpenses.Sum(e => e.Amount)); }
+        get { float currentTotal = PreviousMonthExpenses.Sum(e => e.Amount);
+            float upToSum = 0;
+            foreach (var expense in PreviousMonthExpenses)
+            {
+                if(!expense.Continuous || !expense.Fixed) continue;
+                DateOnly date = expense.Date;
+                while (date < DateOnly.FromDateTime(DateTime.Now))
+                {
+                    upToSum += expense.Amount;
+                    date = date.AddDays(expense.Period);
+                }
+            }
+            return (int)Math.Round(currentTotal + upToSum); }
     }
 
     public int RemainingBudget => User.Limit - CurrentMonthTotal;
@@ -24,16 +72,13 @@ public class ExpensesView
         {
             if (CurrentMonthTotal == 0) return 0;
             if (PreviousMonthTotal == 0) return 0;
-            if (PreviousMonthTotal > CurrentMonthTotal)
+            if (PreviousMonthTotal == CurrentMonthTotal) return 0;
+            if (PreviousMonthTotal > CurrentMonthTotal) 
             {
-                return -1 * (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100);
+                return (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100) - 100;
             }
-
-            if (PreviousMonthTotal == CurrentMonthTotal)
-            {
-                return 0;
-            }
-            return (int)Math.Round((float)PreviousMonthTotal / CurrentMonthTotal * 100);
+            
+            return (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100);
         }
     }
     public List<Category> CurrentMonthCategories { get; set; } = [];

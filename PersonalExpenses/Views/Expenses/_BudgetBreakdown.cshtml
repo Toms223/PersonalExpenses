@@ -14,12 +14,14 @@
     </div>
     <div class="bar">
         <div class="progress" style="width:@((float)Model.CurrentMonthTotal / Model.User.Limit * 100)%"></div>
+        <div class="expected-progress" style="width:@((float)Model.ExpectedMonthTotal / Model.User.Limit * 100)%"></div>
     </div>
     <div class="stats">
         <div class="month-difference">
-            <p class="@(Model.PreviousMonthDifference > 0 ? "positive" : "negative")">@Model.PreviousMonthDifference%</p>
+            <p class="@(Model.PreviousMonthDifference < 0 ? "positive" : "negative")">@Model.PreviousMonthDifference%</p>
             <p> vs last month</p>
         </div>
+        <p>Month-End Projection: @Model.ExpectedMonthTotal€</p>
         <p class="@(Model.User.Limit - Model.CurrentMonthTotal > 0 ? "positive" : "negative")">@(Model.User.Limit - Model.CurrentMonthTotal > 0 ? "Remaining" : "Over") @(Model.User.Limit - Model.CurrentMonthTotal)€</p>
     </div>
 </div>

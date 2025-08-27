@@ -29,22 +29,6 @@ public class CategoryController(ICategoryService categoryService) : Controller
         await categoryService.DeleteCategory(categoryId);
         return RedirectToAction("Index", "Expenses", model);
     }
-    
-    [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> AddExpenseToCategory(int expenseId, int categoryId,  ExpensesView model)
-    {
-        await categoryService.AddExpenseToCategory(expenseId, categoryId);
-        return RedirectToAction("Index", "Expenses", model);
-    }
-    
-    [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> RemoveExpenseFromCategory(int expenseId, int categoryId,  ExpensesView model)
-    {
-        await categoryService.RemoveExpenseFromCategory(expenseId, categoryId);
-        return RedirectToAction("Index", "Expenses", model);
-    }
 
     private bool ValidColorValue(string color)
     {

@@ -8,6 +8,25 @@
     <link rel="stylesheet" href="~/css/expenses.css" />
 }
 
+<script>
+    function toggleDropdown() {
+        const menu = document.getElementById("partialContainer");
+        menu.classList.toggle("show");
+        const toggleButton = document.getElementById("toggleAdd");
+        setTimeout(() => {window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: "smooth" // use "auto" if you don't want animation
+            })
+            if(toggleButton.innerText === "Add Expense") {
+                toggleButton.innerText = "Close";
+            } else {
+                toggleButton.innerText = "Add Expense";
+            }
+        }, 150)
+        
+    }
+</script>
+
 @* Success Message *@
 @if (TempData["SuccessMessage"] != null)
 {
@@ -19,5 +38,18 @@
     <h1 class="page-title">Welcome Back, @Model.User.Name</h1>
 </div>
 
-@await Html.PartialAsync("_BudgetBreakdown")
-@await Html.PartialAsync("_ExpensesBreakdown")
+<div class="expense-content">
+    <div class="expand">
+        @await Html.PartialAsync("_BudgetBreakdown") 
+    </div>
+    <div class="chart-and-recent">
+        @await Html.PartialAsync("_ExpensesBreakdown")
+        @await Html.PartialAsync("_RecentTransactions")
+    </div>
+    <button id="toggleAdd" class="button add" type="button" onclick="toggleDropdown()">
+        Add Expense
+    </button>
+    <div id="partialContainer" class="expand partial hidden">
+        @await Html.PartialAsync("_AddExpense")
+    </div>
+</div>

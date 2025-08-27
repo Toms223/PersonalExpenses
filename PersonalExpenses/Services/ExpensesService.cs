@@ -15,13 +15,14 @@ public class ExpensesService: IExpensesService
         _context = context;
     }
     
-    public Task<Expense> CreateExpense(string name, float amount, DateOnly date, int userId)
+    public Task<Expense> CreateExpense(string name, float amount, DateOnly date, int? categoryId, int userId)
     {
         Expense expense = new Expense();
         expense.Name = name;
         expense.Amount = amount;
         expense.Date = date;
         expense.UserId =  userId;
+        expense.CategoryId = categoryId;
         _context.Expenses.Add(expense);
         _context.SaveChanges();
         return Task.FromResult(expense);
@@ -38,7 +39,7 @@ public class ExpensesService: IExpensesService
         return await _context.Expenses.Where(x => x.UserId == userId && x.Date.Month == month && x.Date.Year == year).ToListAsync();
     }
 
-    public async Task<Expense> CreateContinuousExpense(string name, float amount, DateOnly date, int period, bool fixedExpense, int userId)
+    public async Task<Expense> CreateContinuousExpense(string name, float amount, DateOnly date, int period, bool fixedExpense, int? categoryId, int userId)
     {
         Expense expense = new Expense();
         expense.Name = name;
@@ -48,6 +49,7 @@ public class ExpensesService: IExpensesService
         expense.Continuous = true;
         expense.UserId =  userId;
         expense.Fixed = fixedExpense;
+        expense.CategoryId = categoryId;
         _context.Expenses.Add(expense);
         await _context.SaveChangesAsync();
         return expense;
