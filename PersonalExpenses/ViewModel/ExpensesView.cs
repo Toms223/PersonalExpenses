@@ -73,12 +73,8 @@ public class ExpensesView
             if (CurrentMonthTotal == 0) return 0;
             if (PreviousMonthTotal == 0) return 0;
             if (PreviousMonthTotal == CurrentMonthTotal) return 0;
-            if (PreviousMonthTotal > CurrentMonthTotal) 
-            {
-                return (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100) - 100;
-            }
-            
-            return (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100);
+            int difference = (int)Math.Round((float)CurrentMonthTotal / PreviousMonthTotal * 100);
+            return PreviousMonthTotal > CurrentMonthTotal ? difference - 100 : difference;
         }
     }
     public List<Category> CurrentMonthCategories { get; set; } = [];

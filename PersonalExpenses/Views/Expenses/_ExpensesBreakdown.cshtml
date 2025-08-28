@@ -23,11 +23,12 @@
         <div class="chart-description">
             @foreach (var category in categoryData)
             {
-                <div class="ball" style="background-color: @category.Color;"></div>
-                <div></div>
-                <div class="chart-description-text">
-                    <p>@category.Name</p>
-                    <p class="on-glass">@category.Total€</p>
+                <div class="chart-description-label">
+                    <div class="ball" style="background-color: @category.Color;"></div>
+                    <div class="chart-description-text">
+                        <p class="category">@category.Name</p>
+                        <p class="on-glass">@category.Total€</p>
+                    </div>
                 </div>
             }
         </div>

@@ -1,0 +1,176 @@
+@using PersonalExpenses.Model
+@model PersonalExpenses.ViewModel.ExpensesView
+
+<script>
+function filterExpenses(input) {
+    const query = input.value.trim().toLowerCase();
+    const rows = document.querySelectorAll(".expense-list > div:nth-child(3n+1)"); 
+    // every 1st cell of a 3-col row = expense name
+
+    rows.forEach(cell => {
+        const name = cell.textContent.trim().toLowerCase();
+        const rowCells = [cell, cell.nextElementSibling, cell.nextElementSibling?.nextElementSibling];
+        
+        if (!query || name.includes(query)) {
+            rowCells.forEach(c => c && (c.style.display = ""));
+        } else {
+            rowCells.forEach(c => c && (c.style.display = "none"));
+        }
+    });
+}
+function exportExpensesToCSV() {
+    const rows = [];
+    // Add header row
+    rows.push(['Name', 'Category', 'Amount']);
+
+    const expenseList = document.querySelector('.expense-list');
+    const divs = Array.from(expenseList.children);
+
+    // Each expense uses 3 consecutive divs
+    for (let i = 3; i < divs.length; i += 3) { // skip first 3 header divs
+        const name = divs[i].querySelector('p')?.innerText.trim() || '';
+        const categoryEl = divs[i + 1].querySelector('label input')
+            ? divs[i + 1].querySelector('label').innerText.trim()
+            : divs[i + 1].querySelector('p')?.innerText.trim() || '';
+        const amount = divs[i + 2].querySelector('p')?.innerText.trim() || '';
+        rows.push([name, categoryEl, amount]);
+    }
+
+    // Convert to CSV string
+    const csvContent = rows.map(e => e.map(v => `"${v}"`).join(',')).join('\n');
+
+    // Trigger download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    const today = new Date();
+    const options = { month: "long", year: "numeric" };
+    const monthYear = today.toLocaleString("en-US", options);
+    link.setAttribute('href', url);
+    link.setAttribute('download', `${monthYear} Expenses.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const expenseItems = document.querySelectorAll('.expense-list > div'); // Adjust if your container is different
+    document.querySelectorAll('.category-filter').forEach(option => {
+        option.addEventListener('click', function(e) {
+            e.preventDefault(); // Prevent default label behavior
+
+            const radioInput = this.querySelector('input[type="radio"]');
+
+            // If this option is already selected, deselect it
+            if (this.classList.contains('selected')) {
+                this.classList.remove('selected');
+                radioInput.checked = false;
+                expenseItems.forEach(item => {
+                    item.hidden = false;
+                });
+            } else {
+                document.querySelectorAll('.category-filter').forEach(opt => {
+                    opt.classList.remove('selected');
+                });
+                
+                this.classList.add('selected');
+                
+                radioInput.checked = true;
+                expenseItems.forEach(item => {
+                    const categoryInput = item.querySelector('input[type="radio"][name="categoryId"]');
+                    const p = item.querySelector('p');
+                    const previous = item.previousElementSibling;
+                    const next = item.nextElementSibling;
+                    if(p && p.textContent === ""){
+                        previous.hidden = true;
+                        next.hidden = true;
+                        item.hidden = true;
+                        return;
+                    }
+                    if(!categoryInput){
+                        return;
+                    }
+                    if (categoryInput.value === radioInput.value) {
+                        item.hidden = false;
+                        previous.hidden = false
+                        next.hidden = false;
+                    } else {
+                        previous.hidden = true;
+                        next.hidden = true;
+                        item.hidden = true;
+                    }
+                });
+            }
+        });
+    });
+});
+</script>
+<div class="box expenses">
+    <form class="search-container">
+        <input type="text" name="q" class="search-input" placeholder="Search..." oninput="filterExpenses(this)" required>
+    </form>
+    <div class="category-selector">
+        @foreach (Category category in Model.CurrentMonthCategories)
+        {
+            <label class="category-filter" style="--category-color: #@category.Color;">
+                <input type="radio" name="categoryFilter" value="@category.Id">
+                <div class="category-dot"></div>
+                @category.Name
+            </label>
+        }
+    </div>
+    <div class="expense-list">
+        <div>
+            <p>Name</p>
+        </div>
+        <div>
+            <p>Category</p>
+        </div>
+        <div>
+            <p>Amount</p>
+        </div>
+        @foreach (Expense expense in Model.CurrentMonthExpenses)
+        {
+            Category? category = Model.CurrentMonthCategories.FirstOrDefault(c => c.Id == expense.CategoryId);
+            <div class="expense-name">
+                <p>@expense.Name</p>
+                <div class="expense-type">
+                    @if (expense.Continuous)
+                    {
+                        <img class="icon" src="/images/continuous.svg" alt="Continuous"/>
+                    }
+                    @if (expense.Fixed)
+                    {
+                        <img class="icon" src="/images/fixed.svg" alt="Fixed"/>
+                    }
+                </div>
+            </div>
+            <div>
+                @if (category != null)
+                {
+                    <label class="category-label" style="--category-color: #@category.Color;">
+                        <input type="radio" name="categoryId" value="@category.Id">
+                        <div class="category-dot"></div>
+                        @category.Name
+                    </label>
+                }
+                else
+                {
+                    <p></p>
+                }
+            </div>
+            <div>
+                <p>@expense.Amount€</p>
+            </div>
+        }
+    </div>
+    <div class="month-total">
+        <p>Month Total</p>
+        <p class="text-month-total">
+            @Model.CurrentMonthTotal€
+        </p>
+    </div>
+    <button class="button add" onclick="exportExpensesToCSV()">Export to CSV</button>
+</div>
+

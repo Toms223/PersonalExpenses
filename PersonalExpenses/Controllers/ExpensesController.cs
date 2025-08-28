@@ -20,37 +20,20 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                return RedirectToAction("Index", "Home");
           }
           int userId = int.Parse(userIdClaim);
-          try
-          {
-               if (model.User.Id == 0)
-               {
-                    model.User = await userService.GetUserById(userId);
-               }
+          return View(await HydrateExpensesView(model, userId));
+     }
 
-               if (model.Year == 0 || model.Month == 0)
-               {
-                    model.Year = DateTime.Now.Year;
-                    model.Month = DateTime.Now.Month;
-               }
-               DateOnly currentDate = DateOnly.Parse($"{model.Year}-{model.Month}-1");
-               List<Expense> currentMonthExpenses =
-                    await expenseService.GetExpensesByMonthAndYear(userId, currentDate.Month, currentDate.Year);
-               model.CurrentMonthExpenses = currentMonthExpenses;
-               DateOnly previousDate = currentDate.AddMonths(-1);
-               List<Expense> previousMonthExpenses =
-                    await expenseService.GetExpensesByMonthAndYear(userId, previousDate.Month, previousDate.Year);
-               model.PreviousMonthExpenses = previousMonthExpenses;
-
-               List<int> currentMonthCategoryIds = currentMonthExpenses.Where(e => e.CategoryId != null).Select(e => (int)e.CategoryId).Distinct().ToList();
-               model.CurrentMonthCategories = (await Task.WhenAll(
-                    currentMonthCategoryIds.Select(categoryService.GetCategory)
-               )).ToList();
-          }
-          catch (Exception ex)
+     [Authorize]
+     public async Task<ActionResult> Detailed(ExpensesView model)
+     {
+          string? userIdClaim = User.FindFirst("UserId")?.Value;
+          if (userIdClaim == null)
           {
-               model.Error = ex.ToError();
+               await HttpContext.SignOutAsync();
+               return RedirectToAction("Index", "Home");
           }
-          return View(model);
+          int userId = int.Parse(userIdClaim);
+          return View(await HydrateExpensesView(model, userId));
      }
 
      [HttpPost]
@@ -147,5 +130,50 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
           }
           
           return RedirectToAction(nameof(Index), model);
+     }
+
+     private async Task<ExpensesView> HydrateExpensesView(ExpensesView model, int userId)
+     {
+          try
+          {
+               if (model.User.Id == 0)
+               {
+                    model.User = await userService.GetUserById(userId);
+               }
+
+               if (model.Year == 0 || model.Month == 0)
+               {
+                    model.Year = DateTime.Now.Year;
+                    model.Month = DateTime.Now.Month;
+               }
+               DateOnly currentDate = DateOnly.Parse($"{model.Year}-{model.Month}-1");
+               List<Expense> currentMonthExpenses =
+                    await expenseService.GetExpensesByMonthAndYear(userId, currentDate.Month, currentDate.Year);
+               model.CurrentMonthExpenses = currentMonthExpenses;
+               DateOnly previousDate = currentDate.AddMonths(-1);
+               List<Expense> previousMonthExpenses =
+                    await expenseService.GetExpensesByMonthAndYear(userId, previousDate.Month, previousDate.Year);
+               model.PreviousMonthExpenses = previousMonthExpenses;
+
+               List<int> currentMonthCategoryIds = currentMonthExpenses
+                    .Where(e => e.CategoryId != null)
+                    .Select(e => (int)e.CategoryId)
+                    .Distinct()
+                    .ToList();
+
+               var categories = new List<Category>();
+
+               foreach (var id in currentMonthCategoryIds)
+               {
+                    categories.Add(await categoryService.GetCategory(id));
+               }
+
+               model.CurrentMonthCategories = categories;
+          }
+          catch (Exception ex)
+          {
+               model.Error = ex.ToError();
+          }
+          return model;
      }
 }
