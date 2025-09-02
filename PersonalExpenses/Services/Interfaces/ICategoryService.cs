@@ -7,6 +7,8 @@ public interface ICategoryService
     public Task<Category> CreateCategory(string name, string color);
     public Task<bool> DeleteCategory(int categoryId);
     
+    public Task<List<Category>> GetUserCategories(int userId);
+    
     public Task<Category> GetCategory(int categoryId);
     public Task<bool> AddExpenseToCategory(int categoryId, int expenseId);
     public Task<bool> RemoveExpenseFromCategory(int categoryId, int expenseId);

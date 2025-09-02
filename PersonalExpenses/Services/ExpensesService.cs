@@ -55,29 +55,25 @@ public class ExpensesService: IExpensesService
         return expense;
     }
 
-    public async Task<Expense> UpdateExpense(int id, string? name, float? amount, DateOnly? date, int userId)
+    public async Task<Expense> UpdateExpense(int id, string? name, float? amount, DateOnly? date, bool? continuous,
+        bool? fixedExpense, int? period, int? categoryId, int userId)
     {
-        Expense? expense = _context.Expenses.Find(id);
-        if (userId != expense?.UserId) throw new ExpenseNotFoundException();
+        Expense? expense = await _context.Expenses.FindAsync(id);
         if (expense == null) throw new ExpenseNotFoundException();
-        if (name != null) expense.Name = name;
-        if (amount != null) expense.Amount = (float)amount;
-        if (date != null) expense.Date = (DateOnly)date;
-        await _context.SaveChangesAsync();
-        return expense;
-    }
-    
-    public async Task<Expense> UpdateContinuousExpense(int id, string? name, float? amount, DateOnly? date, int? period, bool? fixedExpense,
-        int userId)
-    {
-        Expense? expense = _context.Expenses.Find(id);
-        if (userId != expense?.UserId) throw new ExpenseNotFoundException();
-        if (expense == null) throw new ExpenseNotFoundException();
-        if (name != null) expense.Name = name;
-        if (amount != null) expense.Amount = (float)amount;
-        if (date != null) expense.Date = (DateOnly)date;
-        if (period != null) expense.Period = (int)period;
-        if (fixedExpense != null) expense.Fixed = (bool)fixedExpense;
+        if(userId != expense.UserId) throw new ExpenseNotFoundException();
+        if(name != null) expense.Name = name;
+        if(amount != null) expense.Amount = (float)amount;
+        if(date != null) expense.Date = (DateOnly)date;
+        if(continuous != null) expense.Continuous = (bool)continuous;
+        if (fixedExpense != null)
+        {
+            if(continuous == true) expense.Fixed = (bool)fixedExpense;
+            else expense.Fixed = false;
+            
+        }
+        Category? category = await _context.Categories.FindAsync(categoryId);
+        if(category != null) expense.CategoryId = category.Id;
+        if(period != null) expense.Period = (int)period;
         await _context.SaveChangesAsync();
         return expense;
     }

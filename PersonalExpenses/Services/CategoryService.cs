@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using PersonalExpenses.Data;
 using PersonalExpenses.Model;
 using PersonalExpenses.Services.Interfaces;
@@ -51,6 +52,11 @@ public class CategoryService : ICategoryService
         expense.CategoryId = categoryId;
         _context.SaveChanges();
         return Task.FromResult(true);
+    }
+
+    public async Task<List<Category>> GetUserCategories(int userId)
+    {
+        return await _context.Categories.Where(c => c.UserId == userId).ToListAsync();
     }
 
     public Task<bool> RemoveExpenseFromCategory(int categoryId, int expenseId)

@@ -8,8 +8,10 @@ CREATE TABLE "Users" (
 
 CREATE TABLE "Categories" (
     "Id" SERIAL PRIMARY KEY,
+    "UserId" INT NOT NULL,
     "Name" VARCHAR(255) NOT NULL,
-    "Color" VARCHAR(6) NOT NULL
+    "Color" VARCHAR(6) NOT NULL,
+    FOREIGN KEY ("UserId") REFERENCES "Users"("Id")
 );
 
 

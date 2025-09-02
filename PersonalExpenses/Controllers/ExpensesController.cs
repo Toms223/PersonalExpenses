@@ -65,10 +65,11 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
           await expenseService.CreateContinuousExpense(name, amount, date, period, fixedExpense, categoryId, userId);
           return RedirectToAction(nameof(Index), model);
      }
-     
+
      [HttpPost]
      [Authorize]
-     public async Task<ActionResult> EditExpense(int id, string? name, float? amount, DateOnly? date, ExpensesView model)
+     public async Task<ActionResult> EditExpense(int id, string? name, float? amount, DateOnly? date, bool? continuous,
+          bool? fixedExpense, int? period, int? categoryId)
      {
           string? userIdClaim = User.FindFirst("UserId")?.Value;
           if (userIdClaim == null)
@@ -76,28 +77,12 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                await HttpContext.SignOutAsync();
                return RedirectToAction("Index", "Home");
           }
+
           int userId = int.Parse(userIdClaim);
-          await expenseService.UpdateExpense(id, name, amount, date, userId);
-          model.EditId = -1;
-          return RedirectToAction(nameof(Index), model);
+          await expenseService.UpdateExpense(id, name, amount, date, continuous, fixedExpense, period, categoryId, userId);
+          return RedirectToAction(nameof(Index));
      }
-     
-     [HttpPost]
-     [Authorize]
-     public async Task<ActionResult> EditContinuousExpense(int id, string? name, float? amount, DateOnly? date, int? period, bool? fixedExpense, ExpensesView model)
-     {
-          string? userIdClaim = User.FindFirst("UserId")?.Value;
-          if (userIdClaim == null)
-          {
-               await HttpContext.SignOutAsync();
-               return RedirectToAction("Index", "Home");
-          }
-          int userId = int.Parse(userIdClaim);
-          await expenseService.UpdateContinuousExpense(id, name, amount, date, period, fixedExpense, userId);
-          model.EditId = -1;
-          return RedirectToAction(nameof(Index), model);
-     }
-     
+
      [HttpPost]
      [Authorize]
      public async Task<ActionResult> DeleteExpense(int id, ExpensesView model)
@@ -116,7 +101,7 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
      
      [HttpPost]
      [Authorize]
-     public async Task<ActionResult> AddToCalender(int id, ExpensesView model)
+     public async Task<ActionResult> AddToCalendar(int id)
      {
           Expense? expense = await expenseService.GetExpense(id);
           if (expense != null)
@@ -129,7 +114,7 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                TempData["SuccessMessage"] = "Failed to add to Outlook Calendar.";
           }
           
-          return RedirectToAction(nameof(Index), model);
+          return RedirectToAction(nameof(Index));
      }
 
      private async Task<ExpensesView> HydrateExpensesView(ExpensesView model, int userId)
@@ -160,15 +145,8 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                     .Select(e => (int)e.CategoryId)
                     .Distinct()
                     .ToList();
-
-               var categories = new List<Category>();
-
-               foreach (var id in currentMonthCategoryIds)
-               {
-                    categories.Add(await categoryService.GetCategory(id));
-               }
-
-               model.CurrentMonthCategories = categories;
+               
+               model.CurrentMonthCategories = await categoryService.GetUserCategories(userId);
           }
           catch (Exception ex)
           {
