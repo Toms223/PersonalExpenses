@@ -1,16 +1,16 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using PersonalExpenses.Model;
 using PersonalExpenses.Services.Interfaces;
 using PersonalExpenses.ViewModel;
 
 namespace PersonalExpenses.Controllers;
 
-public class CategoryController(ICategoryService categoryService) : Controller
+public class UserController(IUserService userService, ICategoryService categoryService): Controller
 {
     [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> CreateCategory(string name, string color)
+    public async Task<ActionResult> Index(UserView model)
     {
         string? userIdClaim = User.FindFirst("UserId")?.Value;
         if (userIdClaim == null)
@@ -19,31 +19,27 @@ public class CategoryController(ICategoryService categoryService) : Controller
             return RedirectToAction("Index", "Home");
         }
         int userId = int.Parse(userIdClaim);
-        if (ValidColorValue(color.ToUpper()))
-        {
-            await categoryService.CreateCategory(name, color.ToUpper(), userId);
-        }
-        return RedirectToAction("Index", "User");
-    }
-    
-    [Authorize]
-    [HttpPost]
-    public async Task<IActionResult> DeleteCategory(int categoryId)
-    {
-        string? userIdClaim = User.FindFirst("UserId")?.Value;
-        if (userIdClaim == null)
-        {
-            await HttpContext.SignOutAsync();
-            return RedirectToAction("Index", "Home");
-        }
-        int userId = int.Parse(userIdClaim);
-        await categoryService.DeleteCategory(categoryId, userId);
-        return RedirectToAction("Index", "User");
+        User user = await userService.GetUserById(userId);
+        List<Category> categories = await categoryService.GetUserCategories(userId);
+        model.Username = user.Name;
+        model.Email = user.Email;
+        model.Limit = user.Limit;
+        model.UserCategories = categories;
+        return View(model);
     }
 
-    private bool ValidColorValue(string color)
+    [Authorize]
+    [HttpPost]
+    public async Task<ActionResult> EditBudgetLimit(int limit)
     {
-        string hexadecimalValues = "0123456789ABCDEF";
-        return color.ToList().All(c => hexadecimalValues.Contains(c)) && color.Length == 6;
+        string? userIdClaim = User.FindFirst("UserId")?.Value;
+        if (userIdClaim == null)
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        int userId = int.Parse(userIdClaim);
+        await userService.EditLimit(userId, limit);
+        return RedirectToAction("Index");
     }
 }

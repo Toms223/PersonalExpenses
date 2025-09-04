@@ -17,4 +17,12 @@ public class UserService : IUserService
     {
         return await _context.Users.FindAsync(id) ?? throw new Exception("User not found");
     }
+
+    public async Task<User> EditLimit(int id, int limit)
+    {
+        User user = await _context.Users.FindAsync(id) ?? throw new Exception("User not found");
+        user.Limit = limit;
+        await _context.SaveChangesAsync();
+        return user;
+    }
 }

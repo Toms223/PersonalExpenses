@@ -1,7 +1,7 @@
 @using System.Text.Json
 @model PersonalExpenses.ViewModel.ExpensesView
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 @{
     var categoryNames = Model.CurrentMonthCategories.Select(c => c.Name).ToList();
     var categoryTotals = Model.CurrentMonthCategories.Select(c => Model.CurrentMonthExpenses
@@ -35,7 +35,6 @@
 </div>
 
 <script>
-    // Data passed from server
     var labels = @Html.Raw(JsonSerializer.Serialize(categoryNames));
     var data = @Html.Raw(JsonSerializer.Serialize(categoryTotals));
     var colors = @Html.Raw(JsonSerializer.Serialize(categoryColors));

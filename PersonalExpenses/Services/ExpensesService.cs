@@ -69,10 +69,9 @@ public class ExpensesService: IExpensesService
         {
             if(continuous == true) expense.Fixed = (bool)fixedExpense;
             else expense.Fixed = false;
-            
         }
         Category? category = await _context.Categories.FindAsync(categoryId);
-        if(category != null) expense.CategoryId = category.Id;
+        expense.CategoryId = category?.Id;
         if(period != null) expense.Period = (int)period;
         await _context.SaveChangesAsync();
         return expense;

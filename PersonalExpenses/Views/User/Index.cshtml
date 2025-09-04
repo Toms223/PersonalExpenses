@@ -1,0 +1,35 @@
+@using PersonalExpenses.Model
+@model PersonalExpenses.ViewModel.UserView
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Home";
+}
+
+<div class="profile-box">
+    <h1 class="page-title">Profile</h1>
+    <div class="user-info">
+        <h2>@Model.Username</h2>
+        <p>@Model.Email</p>
+    </div>
+    
+    <div class="box budget-limit">
+        <p>Budget Limit</p>
+        <h2 id="limit-display">@Model.Limit€</h2>
+        <button class="button add " onclick="replaceLimitWithForm()"><img class="icon bigger" src="images/edit.svg" alt="edit button"/></button>
+    </div>
+    <div class="box budget-limit">
+        <p>Categories</p>
+        <div class="categories">
+        @foreach (Category category in @Model.UserCategories)
+        {
+            <label class="category-label" style="--category-color: #@category.Color;">
+                <input type="radio" name="categoryId" value="@category.Id">
+                <div class="category-dot"></div>
+                @category.Name
+            </label>
+        }
+        <button class="add-category" onclick="categoryForm(this)">+ Add category</button>
+        </div>
+    </div>
+</div>

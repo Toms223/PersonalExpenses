@@ -4,34 +4,6 @@
     ViewData["Title"] = "My Expenses";
 }
 
-@section Styles {
-    <link rel="stylesheet" href="~/css/expenses.css" />
-}
-
-<script>
-    function toggleDropdown() {
-        const menu = document.getElementById("partialContainer");
-        menu.classList.toggle("show");
-        const toggleButton = document.getElementById("toggleAdd");
-        setTimeout(() => {window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: "smooth" // use "auto" if you don't want animation
-            })
-            if(toggleButton.innerText === "Add Expense") {
-                toggleButton.innerText = "Close";
-            } else {
-                toggleButton.innerText = "Add Expense";
-            }
-        }, 150)
-        
-    }
-</script>
-
-@* Success Message *@
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert-success">@TempData["SuccessMessage"]</div>
-}
 
 @* Page Header *@
 <div class="page-header">

@@ -8,24 +8,10 @@
     <link rel="stylesheet" href="~/css/expenses.css" />
 }
 
-<script>
-    function toggleDropdown() {
-        const menu = document.getElementById("partialContainer");
-        menu.classList.toggle("show");
-        const toggleButton = document.getElementById("toggleAdd");
-        setTimeout(() => {window.scrollTo({
-            top: document.body.scrollHeight,
-            behavior: "smooth" // use "auto" if you don't want animation
-            })
-            if(toggleButton.innerText === "Add Expense") {
-                toggleButton.innerText = "Close";
-            } else {
-                toggleButton.innerText = "Add Expense";
-            }
-        }, 250)
-        
-    }
-</script>
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert-success">@TempData["SuccessMessage"]</div>
+}
 
 <div class="expense-content">
     <div class="expand">

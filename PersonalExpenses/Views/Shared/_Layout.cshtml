@@ -4,13 +4,18 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Personal Expenses</title>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="~/js/breakdown.js"></script>
+    <script src="~/js/detailed.js"></script>
+    <script src="~/js/user.js"></script>
+    <link rel="stylesheet" href="~/css/expenses.css" />
     <style>
         /* Global */
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #0f1116; /* dark base */
+            background-color: #0A0A0A; /* dark base */
             background-image: radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
             background-size: 24px 24px; /* spacing between dots */
             transition: background 2s ease;
@@ -71,8 +76,13 @@
     <div class="brand">Personal Expenses</div>
     <nav>
         <a href="/">Home</a>
+        <a href="/User">Profile</a>
         <a href="/Expenses">Expenses</a>
         <a href="/About">About</a>
+        @if (User.Identity?.IsAuthenticated == true)
+        {
+            <a href="/Home/Logout">Logout</a>
+        }
     </nav>
 </header>
 
