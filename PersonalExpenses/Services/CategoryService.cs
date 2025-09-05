@@ -33,6 +33,19 @@ public class CategoryService : ICategoryService
         return true;
     }
 
+    public async Task<Category> EditCategory(int id, string? name, string? color, int userId)
+    {
+        Category? category = await _context.Categories.FindAsync(id);
+        if (category == null || category.UserId != userId)
+        {
+            throw new Exception("Category not found");
+        }
+        if(name != null) category.Name = name;
+        if (color != null) category.Color = color;
+        await _context.SaveChangesAsync();
+        return category;
+    }
+
     public async Task<List<Category>> GetUserCategories(int userId)
     {
         return await _context.Categories.Where(c => c.UserId == userId).ToListAsync();

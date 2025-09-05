@@ -633,9 +633,18 @@ table { width: 100%; border-collapse: collapse; }
     background: indianred none; 
 }
 
+.button.accept {
+    background: green none;
+}
+
 .button.delete:hover {
     transform: scale(1.05);
     box-shadow: 0 0px 20px red;
+}
+
+.button.accept:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0px 20px lime;
 }
 
 .edit-action-buttons{
@@ -892,4 +901,80 @@ table { width: 100%; border-collapse: collapse; }
 .alert-success.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+.confirm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0,0,0,0.80);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.confirm-box{
+    max-width: 50%;
+    gap: 1rem;
+}
+
+.category-edit {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.6rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 2rem;
+    background: var(--glass-strong);
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.95rem;
+    font-weight: 500;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+.category-edit:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.25);
+    transform: translateY(-1px);
+}
+
+.category-edit .category-dot {
+    width: 0.8rem;
+    height: 0.8rem;
+    border-radius: 50%;
+    background: var(--category-color);
+    opacity: 0.8;
+    transition: opacity 0.2s ease;
+}
+
+.category-edit input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.edit{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgb(0,0,0,0.80);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.edit-box{
+    max-width: 50%;
+    gap: 1rem;
 }

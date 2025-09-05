@@ -23,7 +23,7 @@
         <div class="categories">
         @foreach (Category category in @Model.UserCategories)
         {
-            <label class="category-label" style="--category-color: #@category.Color;">
+            <label class="category-edit" style="--category-color: #@category.Color;">
                 <input type="radio" name="categoryId" value="@category.Id">
                 <div class="category-dot"></div>
                 @category.Name

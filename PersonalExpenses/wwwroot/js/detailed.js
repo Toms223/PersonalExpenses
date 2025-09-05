@@ -71,8 +71,9 @@ function enableEdit(id) {
     // Replace item div with Apply and Cancel buttons
     item.innerHTML = `
         <div class="edit-action-buttons">
-            <button class="button" onclick="applyEdit(${id})">Apply</button>
-            <button class="button delete" onclick="cancelEdit(${id})">Cancel</button>
+            <button class="button accept" onclick="applyEdit(${id})">Apply</button>
+            <button class="button" onclick="cancelEdit(${id})">Cancel</button>
+            <button class="button delete" onclick="confirmDelete(${id})">Delete</button>
         </div>
     `;
 
@@ -233,3 +234,47 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 4000);
     }
 });
+
+function confirmDelete(id){
+    const confirmationDiv = document.createElement('div');
+    confirmationDiv.classList.add('confirm');
+    const confirmationBox = document.createElement('div');
+    confirmationBox.classList.add('box','confirm-box');
+    const confirmationDialog = document.createElement('h3')
+    confirmationDialog.textContent = 'Are you sure you want to delete this expense?';
+    const confirmButton = document.createElement('button');
+    confirmButton.classList.add('button','accept');
+    confirmButton.textContent = "Confirm";
+    confirmButton.addEventListener('click', function(){
+        deleteExpense(id)
+    })
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('button','delete');
+    deleteButton.textContent = "Cancel";
+    deleteButton.addEventListener('click', function(){
+        document.body.removeChild(confirmationDiv)
+    })
+    confirmationBox.appendChild(confirmationDialog)
+    confirmationBox.appendChild(confirmButton);
+    confirmationBox.appendChild(deleteButton);
+    confirmationDiv.appendChild(confirmationBox);
+    document.body.appendChild(confirmationDiv)
+}
+
+function deleteExpense(id) {
+    fetch(`/Expenses/Delete?Id=${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok " + response.statusText);
+            }
+            location.reload();
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+}

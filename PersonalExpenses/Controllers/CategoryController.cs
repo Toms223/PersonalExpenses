@@ -28,7 +28,7 @@ public class CategoryController(ICategoryService categoryService) : Controller
     
     [Authorize]
     [HttpPost]
-    public async Task<IActionResult> DeleteCategory(int categoryId)
+    public async Task<IActionResult> DeleteCategory(int id)
     {
         string? userIdClaim = User.FindFirst("UserId")?.Value;
         if (userIdClaim == null)
@@ -37,7 +37,22 @@ public class CategoryController(ICategoryService categoryService) : Controller
             return RedirectToAction("Index", "Home");
         }
         int userId = int.Parse(userIdClaim);
-        await categoryService.DeleteCategory(categoryId, userId);
+        await categoryService.DeleteCategory(id, userId);
+        return RedirectToAction("Index", "User");
+    }
+
+    [Authorize]
+    [HttpPost]
+    public async Task<IActionResult> EditCategory(int id, string? name, string? color)
+    {
+        string? userIdClaim = User.FindFirst("UserId")?.Value;
+        if (userIdClaim == null)
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+        int userId = int.Parse(userIdClaim);
+        await categoryService.EditCategory(id, name, color, userId);
         return RedirectToAction("Index", "User");
     }
 

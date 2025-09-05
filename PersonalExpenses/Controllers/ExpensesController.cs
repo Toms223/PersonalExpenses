@@ -54,10 +54,10 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                Uri uri = new Uri(referer);
                string path = uri.AbsolutePath;
                string[] segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-               
-               string actionName = segments.Length > 1 ? segments[1] : segments[0];
 
-               return RedirectToAction(actionName);
+               string controllerName = segments.Length > 0 ? segments[0] : "Expenses"; 
+               string actionName = (segments.Length > 1 ? segments[1] : "Index");
+               return RedirectToAction(actionName, controllerName);
           }
           return RedirectToAction(nameof(Index));
      }
@@ -80,10 +80,10 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                Uri uri = new Uri(referer);
                string path = uri.AbsolutePath;
                string[] segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-               
-               string actionName = segments.Length > 1 ? segments[1] : segments[0];
 
-               return RedirectToAction(actionName);
+               string controllerName = segments.Length > 0 ? segments[0] : "Expenses"; 
+               string actionName = (segments.Length > 1 ? segments[1] : "Index");
+               return RedirectToAction(actionName, controllerName);
           }
           return RedirectToAction(nameof(Index));
      }
@@ -107,14 +107,36 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                Uri uri = new Uri(referer);
                string path = uri.AbsolutePath;
                string[] segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-               
-               string actionName = segments.Length > 1 ? segments[1] : segments[0];
 
-               return RedirectToAction(actionName);
+               string controllerName = segments.Length > 0 ? segments[0] : "Expenses"; 
+               string actionName = (segments.Length > 1 ? segments[1] : "Index");
+               return RedirectToAction(actionName, controllerName);
           }
           return RedirectToAction(nameof(Index));
      }
-     
+
+     [HttpPost]
+     [Authorize]
+     public async Task<ActionResult> Delete(int id)
+     {
+          string? userIdClaim = User.FindFirst("UserId")?.Value;
+          if (userIdClaim == null)
+          {
+               await HttpContext.SignOutAsync();
+               return RedirectToAction("Index", "Home");
+          }
+          int userId = int.Parse(userIdClaim);
+          bool success = await expenseService.DeleteExpense(id, userId);
+          if (success)
+          {
+               TempData["SuccessMessage"] = "Expense was deleted successfully.";
+          }
+          else
+          {
+               TempData["SuccessMessage"] = "Failed to delete expense.";
+          }
+          return RedirectToAction(nameof(Detailed));
+     }
      
      [HttpPost]
      [Authorize]
@@ -136,10 +158,10 @@ public class ExpensesController(IExpensesService expenseService, ICalenderServic
                Uri uri = new Uri(referer);
                string path = uri.AbsolutePath;
                string[] segments = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-               
-               string actionName = segments.Length > 1 ? segments[1] : segments[0];
 
-               return RedirectToAction(actionName);
+               string controllerName = segments.Length > 0 ? segments[0] : "Expenses"; 
+               string actionName = (segments.Length > 1 ? segments[1] : "Index");
+               return RedirectToAction(actionName, controllerName);
           }
           return RedirectToAction(nameof(Index));
      }
