@@ -19,9 +19,4 @@ public class Expense
     public bool Fixed {get; set;}
     
     public int Period { get; set; }
-
-    public DateOnly NextPayment()
-    {
-        return Date.AddDays(Period);
-    }
 }
